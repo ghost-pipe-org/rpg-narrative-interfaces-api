@@ -47,9 +47,15 @@ export async function authenticateController(req: Request, res: Response) {
 				code: "REGISTRATION_REQUIRED",
 			});
 		}
-		if (error instanceof EmailNotVerifiedError) {
+		if (
+			error instanceof EmailNotVerifiedError ||
+			(error instanceof Error && error.name === "EmailNotVerifiedError")
+		) {
 			return res.status(403).json({
-				message: error.message,
+				message:
+					error instanceof Error
+						? error.message
+						: "É necessário verificar o e-mail para ativar a conta.",
 				code: "EMAIL_NOT_VERIFIED",
 			});
 		}

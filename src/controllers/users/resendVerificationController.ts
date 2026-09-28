@@ -17,7 +17,16 @@ export async function resendVerificationController(req: Request, res: Response) 
 
 	try {
 		const service = makeResendVerificationService();
-		await service.execute(parsed.data);
+		const { sent } = await service.execute(parsed.data);
+
+		if (!sent) {
+			return res.status(502).json({
+				message:
+					"Não foi possível enviar o e-mail de verificação. Tente novamente em alguns minutos.",
+				code: "EMAIL_SEND_FAILED",
+			});
+		}
+
 		return res.status(200).json({
 			message:
 				"Se existir uma conta com este e-mail ainda não verificada, um e-mail de verificação foi enviado.",

@@ -8,17 +8,24 @@ interface ResendVerificationRequest {
 	email: string;
 }
 
+interface ResendVerificationResponse {
+	sent: boolean;
+}
+
 export class ResendVerificationService {
 	constructor(
 		private usersRepository: UsersRepository,
 		private emailTokensRepository: EmailTokensRepository,
 	) {}
 
-	async execute({ email }: ResendVerificationRequest): Promise<void> {
+	async execute({
+		email,
+	}: ResendVerificationRequest): Promise<ResendVerificationResponse> {
 		const user = await this.usersRepository.findByEmail(email);
 
 		if (!user || user.emailVerified || !user.passwordHash) {
-			return;
+			// Resposta genérica: não revela se a conta existe
+			return { sent: true };
 		}
 
 		await this.emailTokensRepository.invalidateUserTokens(
@@ -39,10 +46,12 @@ export class ResendVerificationService {
 
 		const verifyUrl = `${env.FRONTEND_URL}/verify-email?token=${rawToken}`;
 		const mail = buildVerificationEmail(user.name, verifyUrl);
-		await sendMail({
+		const { sent } = await sendMail({
 			to: user.email,
 			...mail,
 			devLink: verifyUrl,
 		});
+
+		return { sent };
 	}
 }
