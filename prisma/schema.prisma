@@ -37,13 +37,20 @@ enum EnrollmentStatus {
   REJEITADO
 }
 
+enum EmailTokenType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
 model User {
   id            String   @id @default(uuid()) @db.Uuid
   name          String   @db.VarChar(100)
   enrollment    String?  @db.VarChar(9)
   phoneNumber   String?  @db.VarChar(20)
   email         String   @unique @db.VarChar(255)
-  passwordHash  String   @db.VarChar(255)
+  passwordHash  String?  @db.VarChar(255)
+  googleId      String?  @unique @db.VarChar(255)
+  emailVerified Boolean  @default(false)
   role          UserRole @default(PLAYER)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -52,6 +59,22 @@ model User {
   createdSessions      Session[]            @relation("SessionToUser")
   facilitatedSessions  SessionFacilitator[]
   posts                Post[]
+  emailTokens          EmailToken[]
+}
+
+model EmailToken {
+  id        String         @id @default(uuid()) @db.Uuid
+  userId    String         @db.Uuid
+  tokenHash String         @db.VarChar(255)
+  type      EmailTokenType
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime       @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tokenHash])
+  @@index([userId, type])
 }
 
 model Session {
