@@ -24,6 +24,11 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
       - DATABASE_URL=postgres://postgres:1234@postgres:5432/rpg-system-backend
+      - JWT_SECRET=${JWT_SECRET:-dev-jwt-secret-change-me}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:5173}
+      - NODE_ENV=dev
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - RESEND_FROM=${RESEND_FROM:-Narrativas Interativas <onboarding@resend.dev>}
     links:
       - postgres
     depends_on:

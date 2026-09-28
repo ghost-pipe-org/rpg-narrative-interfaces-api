@@ -9,6 +9,12 @@ const envSchema = z.object({
 	ADMIN_EMAIL: z.string().email().optional(),
 	ADMIN_PASSWORD: z.string().min(8).optional(),
 	ADMIN_NAME: z.string().optional(),
+
+	GOOGLE_CLIENT_ID: z.string().optional(),
+	FRONTEND_URL: z.string().url().default("http://localhost:5173"),
+
+	RESEND_API_KEY: z.string().optional(),
+	RESEND_FROM: z.string().optional(),
 });
 
 const _env = envSchema.safeParse(process.env);
