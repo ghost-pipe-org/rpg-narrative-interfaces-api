@@ -20,23 +20,21 @@ export async function registerController(req: Request, res: Response) {
 	try {
 		const registerService = makeRegisterService();
 
-		const { user, requiresEmailVerification, devLink } =
-			await registerService.execute({
-				name,
-				email,
-				password,
-				googleIdToken,
-				enrollment,
-				phoneNumber,
-				masterConfirm,
-			});
+		const { user, requiresEmailVerification } = await registerService.execute({
+			name,
+			email,
+			password,
+			googleIdToken,
+			enrollment,
+			phoneNumber,
+			masterConfirm,
+		});
 
 		if (requiresEmailVerification) {
 			return res.status(201).json({
 				message:
 					"User registered successfully. Please verify your email before logging in.",
 				requiresEmailVerification: true,
-				...(devLink ? { devLink } : {}),
 			});
 		}
 

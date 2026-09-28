@@ -1,9 +1,5 @@
 import { env } from "@/env/index";
-import {
-	buildVerificationEmail,
-	isDevMailFallbackEnabled,
-	sendMail,
-} from "@/lib/mailer";
+import { buildVerificationEmail, sendMail } from "@/lib/mailer";
 import { generateRawToken, hashToken } from "@/lib/token";
 import type { EmailTokensRepository } from "@/repositories/emailTokensRepository";
 import type { UsersRepository } from "@/repositories/usersRepository";
@@ -12,23 +8,17 @@ interface ResendVerificationRequest {
 	email: string;
 }
 
-interface ResendVerificationResponse {
-	devLink?: string;
-}
-
 export class ResendVerificationService {
 	constructor(
 		private usersRepository: UsersRepository,
 		private emailTokensRepository: EmailTokensRepository,
 	) {}
 
-	async execute({
-		email,
-	}: ResendVerificationRequest): Promise<ResendVerificationResponse> {
+	async execute({ email }: ResendVerificationRequest): Promise<void> {
 		const user = await this.usersRepository.findByEmail(email);
 
 		if (!user || user.emailVerified || !user.passwordHash) {
-			return {};
+			return;
 		}
 
 		await this.emailTokensRepository.invalidateUserTokens(
@@ -54,9 +44,5 @@ export class ResendVerificationService {
 			...mail,
 			devLink: verifyUrl,
 		});
-
-		return {
-			devLink: isDevMailFallbackEnabled() ? verifyUrl : undefined,
-		};
 	}
 }

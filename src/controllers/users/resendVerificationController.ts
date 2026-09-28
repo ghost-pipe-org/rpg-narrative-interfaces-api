@@ -16,11 +16,10 @@ export async function resendVerificationController(req: Request, res: Response) 
 
 	try {
 		const service = makeResendVerificationService();
-		const { devLink } = await service.execute(parsed.data);
+		await service.execute(parsed.data);
 		return res.status(200).json({
 			message:
 				"If an account with this email exists and is unverified, a verification email has been sent.",
-			...(devLink ? { devLink } : {}),
 		});
 	} catch (error) {
 		console.error(error);

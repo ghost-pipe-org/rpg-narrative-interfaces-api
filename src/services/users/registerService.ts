@@ -1,9 +1,5 @@
 import { env } from "@/env/index";
-import {
-	buildVerificationEmail,
-	isDevMailFallbackEnabled,
-	sendMail,
-} from "@/lib/mailer";
+import { buildVerificationEmail, sendMail } from "@/lib/mailer";
 import { verifyGoogleIdToken } from "@/lib/googleAuth";
 import { generateRawToken, hashToken } from "@/lib/token";
 import type { EmailTokensRepository } from "@/repositories/emailTokensRepository";
@@ -26,7 +22,6 @@ interface RegisterServiceRequest {
 interface RegisterServiceResponse {
 	user: User;
 	requiresEmailVerification: boolean;
-	devLink?: string;
 }
 
 export class RegisterService {
@@ -129,8 +124,6 @@ export class RegisterService {
 		return {
 			user,
 			requiresEmailVerification: true,
-			// Em dev, devolve o link também na resposta (toast), além do e-mail
-			devLink: isDevMailFallbackEnabled() ? verifyUrl : undefined,
 		};
 	}
 }
