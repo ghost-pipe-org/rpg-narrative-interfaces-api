@@ -152,6 +152,36 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 						},
 					},
 				},
+				"403": {
+					description: "Email não verificado",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/Error",
+							},
+						},
+					},
+				},
+				"404": {
+					description: "Conta não cadastrada (login Google sem registro prévio)",
+					content: {
+						"application/json": {
+							schema: {
+								type: "object",
+								properties: {
+									message: {
+										type: "string",
+										example: "Conta não cadastrada.",
+									},
+									code: {
+										type: "string",
+										example: "REGISTRATION_REQUIRED",
+									},
+								},
+							},
+						},
+					},
+				},
 				"401": {
 					description: "Credenciais inválidas",
 					content: {

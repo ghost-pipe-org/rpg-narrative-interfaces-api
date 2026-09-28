@@ -36,6 +36,10 @@ export class AuthenticateService {
 					throw new InvalidCredentialsError();
 				}
 
+				if (!userByGoogleId.emailVerified) {
+					throw new EmailNotVerifiedError();
+				}
+
 				return { user: userByGoogleId };
 			}
 
@@ -54,6 +58,7 @@ export class AuthenticateService {
 				throw new InvalidCredentialsError();
 			}
 
+			// Google proves ownership of the email, so linking also activates the account.
 			const user = await this.userRepository.update(userByEmail.id, {
 				googleId: googleIdentity.googleId,
 				emailVerified: true,

@@ -1,6 +1,6 @@
 export class UserRegistrationRequiredError extends Error {
 	constructor() {
-		super("User not found. Please register.");
+		super("Conta não cadastrada.");
 		this.name = "UserRegistrationRequiredError";
 	}
 }

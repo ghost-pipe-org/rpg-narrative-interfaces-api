@@ -37,9 +37,13 @@ export async function authenticateController(req: Request, res: Response) {
 			user: userInfo,
 		});
 	} catch (error) {
-		if (error instanceof UserRegistrationRequiredError) {
+		if (
+			error instanceof UserRegistrationRequiredError ||
+			(error instanceof Error && error.name === "UserRegistrationRequiredError")
+		) {
 			return res.status(404).json({
-				message: error.message,
+				message:
+					error instanceof Error ? error.message : "Conta não cadastrada.",
 				code: "REGISTRATION_REQUIRED",
 			});
 		}

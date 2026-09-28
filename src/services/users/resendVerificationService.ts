@@ -49,14 +49,14 @@ export class ResendVerificationService {
 
 		const verifyUrl = `${env.FRONTEND_URL}/verify-email?token=${rawToken}`;
 		const mail = buildVerificationEmail(user.name, verifyUrl);
-		const { sent } = await sendMail({
+		await sendMail({
 			to: user.email,
 			...mail,
 			devLink: verifyUrl,
 		});
 
 		return {
-			devLink: !sent && isDevMailFallbackEnabled() ? verifyUrl : undefined,
+			devLink: isDevMailFallbackEnabled() ? verifyUrl : undefined,
 		};
 	}
 }

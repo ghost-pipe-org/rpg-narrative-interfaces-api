@@ -285,8 +285,61 @@ describe("Users Authentication", () => {
 				})
 				.expect(404);
 
-			expect(response.body.message).toBe("User not found. Please register.");
+			expect(response.body.message).toBe("Conta não cadastrada.");
 			expect(response.body.code).toBe("REGISTRATION_REQUIRED");
+		});
+
+		it("should reject google login when linked account is not verified", async () => {
+			const user = await createUser({
+				email: "google.unverified@example.com",
+				password: "Password123",
+				googleId: "google-sub-unverified",
+				emailVerified: false,
+			});
+
+			mockedVerifyGoogleIdToken.mockResolvedValue({
+				googleId: "google-sub-unverified",
+				email: user.email,
+				emailVerified: true,
+			});
+
+			const response = await request(app)
+				.post("/users/authenticate")
+				.send({
+					googleIdToken: "fake-google-id-token",
+				})
+				.expect(403);
+
+			expect(response.body.code).toBe("EMAIL_NOT_VERIFIED");
+		});
+
+		it("should activate unverified account when linking google by email", async () => {
+			const user = await createUser({
+				email: "activate.via.google@example.com",
+				password: "Password123",
+				emailVerified: false,
+			});
+
+			mockedVerifyGoogleIdToken.mockResolvedValue({
+				googleId: "google-sub-activate",
+				email: user.email,
+				emailVerified: true,
+			});
+
+			const response = await request(app)
+				.post("/users/authenticate")
+				.send({
+					googleIdToken: "fake-google-id-token",
+				})
+				.expect(200);
+
+			expect(response.body).toHaveProperty("token");
+
+			const updated = await prisma.user.findUnique({
+				where: { email: user.email },
+			});
+			expect(updated?.googleId).toBe("google-sub-activate");
+			expect(updated?.emailVerified).toBe(true);
 		});
 	});
 

@@ -120,7 +120,7 @@ export class RegisterService {
 
 		const verifyUrl = `${env.FRONTEND_URL}/verify-email?token=${rawToken}`;
 		const mail = buildVerificationEmail(user.name, verifyUrl);
-		const { sent } = await sendMail({
+		await sendMail({
 			to: user.email,
 			...mail,
 			devLink: verifyUrl,
@@ -129,7 +129,8 @@ export class RegisterService {
 		return {
 			user,
 			requiresEmailVerification: true,
-			devLink: !sent && isDevMailFallbackEnabled() ? verifyUrl : undefined,
+			// Em dev, devolve o link também na resposta (toast), além do e-mail
+			devLink: isDevMailFallbackEnabled() ? verifyUrl : undefined,
 		};
 	}
 }
