@@ -1,6 +1,6 @@
 export class NotFoundError extends Error {
-	constructor(entity: string) {
-		super(`${entity} not found.`);
+	constructor(message: string) {
+		super(message);
 		this.name = "NotFoundError";
 	}
 }

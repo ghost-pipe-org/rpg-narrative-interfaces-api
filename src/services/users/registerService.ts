@@ -1,4 +1,4 @@
-import { env } from "@/env/index";
+﻿import { env } from "@/env/index";
 import { buildVerificationEmail, sendMail } from "@/lib/mailer";
 import { verifyGoogleIdToken } from "@/lib/googleAuth";
 import { generateRawToken, hashToken } from "@/lib/token";
@@ -82,7 +82,7 @@ export class RegisterService {
 		}
 
 		if (!email || !password) {
-			throw new Error("Email and password are required");
+			throw new Error("E-mail e senha são obrigatórios");
 		}
 
 		const userWithSameEmail = await this.usersRepository.findByEmail(email);

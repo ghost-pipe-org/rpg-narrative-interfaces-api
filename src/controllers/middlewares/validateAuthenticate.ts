@@ -1,16 +1,16 @@
-import type { NextFunction, Request, Response } from "express";
+﻿import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
 const authenticateSchema = z.union([
 	z
 		.object({
-			email: z.string().email({ message: "Invalid email address" }),
+			email: z.string().email({ message: "Endereço de e-mail inválido" }),
 			password: z.string(),
 		})
 		.strict(),
 	z
 		.object({
-			googleIdToken: z.string().min(1, { message: "googleIdToken is required" }),
+			googleIdToken: z.string().min(1, { message: "googleIdToken é obrigatório" }),
 		})
 		.strict(),
 ]);

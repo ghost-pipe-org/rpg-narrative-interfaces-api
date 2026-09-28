@@ -1,5 +1,6 @@
 export class SessionFullError extends Error {
 	constructor() {
-		super("Session has reached maximum capacity");
+		super("A sessão atingiu a capacidade máxima.");
+		this.name = "SessionFullError";
 	}
 }

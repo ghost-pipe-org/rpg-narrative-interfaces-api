@@ -1,6 +1,6 @@
 export class AlreadyEnrolledError extends Error {
 	constructor() {
-		super("User is already enrolled in this session.");
+		super("Usuário já está inscrito nesta sessão.");
 		this.name = "AlreadyEnrolledError";
 	}
 }

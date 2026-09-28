@@ -1,6 +1,6 @@
 export class SessionAlreadyRejectedError extends Error {
 	constructor() {
-		super("Session already rejected.");
+		super("Sessão já rejeitada.");
 		this.name = "SessionAlreadyRejectedError";
 	}
 }

@@ -1,4 +1,4 @@
-import { env } from "@/env/index";
+﻿import { env } from "@/env/index";
 import { EmailNotVerifiedError } from "@/services/errors/emailNotVerifiedError";
 import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
 import { UserRegistrationRequiredError } from "@/services/errors/userRegistrationRequiredError";
@@ -32,7 +32,7 @@ export async function authenticateController(req: Request, res: Response) {
 			expiresIn: "7d",
 		});
 		return res.status(200).json({
-			message: "User authenticated successfully",
+			message: "Usuário autenticado com sucesso",
 			token,
 			user: userInfo,
 		});
@@ -57,6 +57,6 @@ export async function authenticateController(req: Request, res: Response) {
 			return res.status(400).json({ message: error.message });
 		}
 		console.error(error);
-		return res.status(500).json({ message: "Internal server error" });
+		return res.status(500).json({ message: "Erro interno no servidor" });
 	}
 }

@@ -1,6 +1,6 @@
 export class EmailNotVerifiedError extends Error {
 	constructor() {
-		super("Email not verified.");
+		super("E-mail não verificado.");
 		this.name = "EmailNotVerifiedError";
 	}
 }

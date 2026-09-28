@@ -1,4 +1,4 @@
-import type { OpenAPIV3 } from "openapi-types";
+﻿import type { OpenAPIV3 } from "openapi-types";
 import { swaggerSpec } from "./swaggerConfig";
 
 // Definições das rotas da API
@@ -92,7 +92,7 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 								masterEnrollment: {
 									summary: "Matrícula obrigatória para mestres",
 									value: {
-										message: "Masters require enrollment",
+										message: "Mestres precisam informar matrícula",
 									},
 								},
 							},
@@ -107,7 +107,7 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 								$ref: "#/components/schemas/Error",
 							},
 							example: {
-								message: "User with this email already exists",
+								message: "Já existe um usuário com este e-mail",
 							},
 						},
 					},
@@ -404,7 +404,7 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 								pendingSession: {
 									summary: "Sessão pendente existe",
 									value: {
-										message: "Master already has a pending session",
+										message: "O mestre já possui uma sessão pendente",
 									},
 								},
 							},
@@ -886,7 +886,7 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 								properties: {
 									message: {
 										type: "string",
-										example: "Profile updated successfully",
+										example: "Perfil atualizado com sucesso",
 									},
 									user: { $ref: "#/components/schemas/User" },
 								},

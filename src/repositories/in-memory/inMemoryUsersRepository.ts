@@ -44,7 +44,7 @@ export class InMemoryUsersRepository implements UsersRepository {
 	async update(id: string, data: Prisma.UserUpdateInput): Promise<User> {
 		const userIndex = this.items.findIndex((user) => user.id === id);
 		if (userIndex === -1) {
-			throw new Error(`User with id ${id} not found`);
+			throw new Error(`Usuário com id ${id} não encontrado`);
 		}
 
 		const currentUser = this.items[userIndex];

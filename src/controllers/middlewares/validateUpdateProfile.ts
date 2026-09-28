@@ -21,7 +21,7 @@ const updateProfileSchema = z
 			.or(z.literal(""))
 			.optional(),
 
-		email: z.string().email({ message: "Email inválido" }).max(100).optional(),
+		email: z.string().email({ message: "E-mail inválido" }).max(100).optional(),
 		enrollment: z
 			.any()
 			.optional()

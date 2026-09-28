@@ -1,4 +1,4 @@
-import { PrismaUsersRepository } from "@/repositories/prisma/prismaUsersRepository";
+﻿import { PrismaUsersRepository } from "@/repositories/prisma/prismaUsersRepository";
 import type { UserRole } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
 
@@ -24,7 +24,7 @@ export const validateRole = (requiredRoles: RequiredRole) => {
 			// Verifica se o usuário tem pelo menos um dos roles necessários
 			if (!allowedRoles.includes(userRole)) {
 				return res.status(403).json({
-					message: "Access denied. Insufficient permissions.",
+					message: "Acesso negado. Permissões insuficientes.",
 					required: allowedRoles,
 					current: userRole,
 				});
@@ -33,7 +33,7 @@ export const validateRole = (requiredRoles: RequiredRole) => {
 			next();
 		} catch (error) {
 			console.error("Error validating role:", error);
-			return res.status(500).json({ message: "Internal server error" });
+			return res.status(500).json({ message: "Erro interno no servidor" });
 		}
 	};
 };

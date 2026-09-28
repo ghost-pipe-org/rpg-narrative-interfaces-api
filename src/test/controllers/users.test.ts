@@ -36,7 +36,7 @@ describe("Users Authentication", () => {
 				.expect(201);
 
 			expect(response.body.requiresEmailVerification).toBe(true);
-			expect(response.body.message).toContain("verify your email");
+			expect(response.body.message).toContain("Verifique seu e-mail");
 
 			const user = await prisma.user.findUnique({
 				where: { email: userData.email },
@@ -369,7 +369,7 @@ describe("Users Authentication", () => {
 				.send({ token: "invalid-token" })
 				.expect(400);
 
-			expect(response.body.message).toBe("Invalid or expired token.");
+			expect(response.body.message).toBe("Token inválido ou expirado.");
 		});
 
 		it("should accept forgot-password for existing user", async () => {
@@ -383,7 +383,7 @@ describe("Users Authentication", () => {
 				.send({ email: user.email })
 				.expect(200);
 
-			expect(response.body.message).toContain("password reset");
+			expect(response.body.message).toContain("redefinição de senha");
 
 			const tokens = await prisma.emailToken.findMany({
 				where: { userId: user.id, type: "PASSWORD_RESET" },

@@ -1,12 +1,12 @@
-import type { NextFunction, Request, Response } from "express";
+﻿import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
 const approveSessionSchema = z
 	.object({
 		approvedDate: z.string().datetime({
-			message: "ApprovedDate must be a valid ISO datetime string",
+			message: "A data de aprovação deve ser uma data/hora ISO válida",
 		}),
-		location: z.string().min(1, { message: "Location is required" }),
+		location: z.string().min(1, { message: "Local é obrigatório" }),
 	})
 	.strict();
 

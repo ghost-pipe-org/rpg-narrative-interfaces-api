@@ -1,4 +1,4 @@
-import request from "supertest";
+﻿import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
 import app from "../../app";
 import type { TestUser } from "../helpers";
@@ -80,7 +80,7 @@ describe("GET /users/profile - User Profile Controller", () => {
 
 			expect(response.body).toHaveProperty(
 				"message",
-				"Profile retrieved successfully",
+				"Perfil obtido com sucesso",
 			);
 			expect(response.body).toHaveProperty("data");
 
@@ -136,7 +136,7 @@ describe("GET /users/profile - User Profile Controller", () => {
 
 			expect(response.body).toHaveProperty(
 				"message",
-				"Profile retrieved successfully",
+				"Perfil obtido com sucesso",
 			);
 			expect(response.body).toHaveProperty("data");
 

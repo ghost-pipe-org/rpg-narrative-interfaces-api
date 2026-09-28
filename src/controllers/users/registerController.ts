@@ -1,4 +1,4 @@
-import { env } from "@/env/index";
+﻿import { env } from "@/env/index";
 import { MasterRequiresEnrollmentError } from "@/services/errors/masterRequiresEnrollmentError";
 import { UserAlreadyExistsError } from "@/services/errors/userAlreadyExistsError";
 import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
@@ -33,7 +33,7 @@ export async function registerController(req: Request, res: Response) {
 		if (requiresEmailVerification) {
 			return res.status(201).json({
 				message:
-					"User registered successfully. Please verify your email before logging in.",
+					"Usuário cadastrado com sucesso. Verifique seu e-mail antes de fazer login.",
 				requiresEmailVerification: true,
 			});
 		}
@@ -53,7 +53,7 @@ export async function registerController(req: Request, res: Response) {
 		});
 
 		return res.status(201).json({
-			message: "User registered successfully",
+			message: "Usuário cadastrado com sucesso",
 			requiresEmailVerification: false,
 			token,
 			user: userInfo,
@@ -69,6 +69,6 @@ export async function registerController(req: Request, res: Response) {
 			return res.status(400).json({ message: error.message });
 		}
 		console.error(error);
-		return res.status(500).json({ message: "Internal server error" });
+		return res.status(500).json({ message: "Erro interno no servidor" });
 	}
 }

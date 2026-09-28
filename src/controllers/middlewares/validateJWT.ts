@@ -1,4 +1,4 @@
-import { env } from "@/env/index";
+﻿import { env } from "@/env/index";
 /// <reference path="../../@types/express.d.ts" />
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
@@ -8,7 +8,7 @@ export const validateJWT = () => {
 		const token = req.headers.authorization?.split(" ")[1];
 
 		if (!token) {
-			return res.status(401).json({ message: "Token not provided" });
+			return res.status(401).json({ message: "Token não fornecido" });
 		}
 
 		try {
@@ -22,7 +22,7 @@ export const validateJWT = () => {
 
 			next();
 		} catch (error) {
-			return res.status(401).json({ message: "Invalid token" });
+			return res.status(401).json({ message: "Token inválido" });
 		}
 	};
 };

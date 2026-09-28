@@ -1,16 +1,16 @@
-import type { NextFunction, Request, Response } from "express";
+﻿import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
 const passwordSchema = z
 	.string()
-	.min(6, { message: "Password must be at least 6 characters long" })
+	.min(6, { message: "A senha deve ter pelo menos 6 caracteres" })
 	.regex(/[A-Z]/, {
-		message: "Password must contain at least one uppercase letter",
+		message: "A senha deve conter pelo menos uma letra maiúscula",
 	})
-	.regex(/[0-9]/, { message: "Password must contain at least one number" });
+	.regex(/[0-9]/, { message: "A senha deve conter pelo menos um número" });
 
 const baseFields = {
-	name: z.string().min(1, { message: "Name is required" }),
+	name: z.string().min(1, { message: "Nome é obrigatório" }),
 	enrollment: z
 		.string()
 		.regex(/^\d{9}$/)
@@ -20,7 +20,7 @@ const baseFields = {
 		.string()
 		.regex(/^\d{10,11}$/, {
 			message:
-				"Phone number must be in format: 83999999999 (area code + number)",
+				"Telefone deve estar no formato: 83999999999 (DDD + número)",
 		})
 		.optional(),
 	masterConfirm: z.boolean().optional(),
@@ -45,7 +45,7 @@ const registerSchema = z.union([
 	z
 		.object({
 			...baseFields,
-			email: z.string().email({ message: "Invalid email address" }),
+			email: z.string().email({ message: "Endereço de e-mail inválido" }),
 			password: passwordSchema,
 		})
 		.strict()
@@ -56,7 +56,7 @@ const registerSchema = z.union([
 	z
 		.object({
 			...baseFields,
-			googleIdToken: z.string().min(1, { message: "googleIdToken is required" }),
+			googleIdToken: z.string().min(1, { message: "googleIdToken é obrigatório" }),
 		})
 		.strict()
 		.refine(masterEnrollmentRefine.check, {

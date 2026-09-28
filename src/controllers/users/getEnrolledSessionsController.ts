@@ -1,4 +1,4 @@
-import { makeGetUserEnrolledSessionsService } from "@/services/factories/makeGetUserEnrolledSessionsService";
+﻿import { makeGetUserEnrolledSessionsService } from "@/services/factories/makeGetUserEnrolledSessionsService";
 import type { Request, Response } from "express";
 
 export async function getEnrolledSessionsController(
@@ -16,6 +16,6 @@ export async function getEnrolledSessionsController(
 		return res.status(200).json({ data: enrolledSessions });
 	} catch (error) {
 		console.error("Error fetching enrolled sessions:", error);
-		return res.status(500).json({ message: "Internal server error" });
+		return res.status(500).json({ message: "Erro interno no servidor" });
 	}
 }

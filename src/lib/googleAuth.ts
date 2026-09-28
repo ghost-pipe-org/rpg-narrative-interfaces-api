@@ -1,4 +1,4 @@
-import { env } from "@/env/index";
+﻿import { env } from "@/env/index";
 import { OAuth2Client } from "google-auth-library";
 import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
 
@@ -15,7 +15,7 @@ export async function verifyGoogleIdToken(
 	googleIdToken: string,
 ): Promise<GoogleIdentity> {
 	if (!env.GOOGLE_CLIENT_ID) {
-		throw new Error("GOOGLE_CLIENT_ID is not configured");
+		throw new Error("GOOGLE_CLIENT_ID não está configurado");
 	}
 
 	try {
