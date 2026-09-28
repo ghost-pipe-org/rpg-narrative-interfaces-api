@@ -27,6 +27,8 @@ export interface TestUser {
 	role: UserRole;
 	enrollment?: string;
 	phoneNumber?: string;
+	googleId?: string;
+	emailVerified?: boolean;
 }
 
 export interface TestSession {
@@ -63,6 +65,8 @@ export async function createUser(
 		role: data.role || ("PLAYER" as UserRole),
 		enrollment: data.enrollment,
 		phoneNumber: data.phoneNumber,
+		googleId: data.googleId,
+		emailVerified: data.emailVerified ?? true,
 	};
 
 	try {
@@ -74,6 +78,8 @@ export async function createUser(
 				role: userData.role,
 				enrollment: userData.enrollment,
 				phoneNumber: userData.phoneNumber,
+				googleId: userData.googleId,
+				emailVerified: userData.emailVerified,
 			},
 		});
 
@@ -102,6 +108,8 @@ export async function createUser(
 					role: userData.role,
 					enrollment: userData.enrollment,
 					phoneNumber: userData.phoneNumber,
+					googleId: userData.googleId,
+					emailVerified: userData.emailVerified,
 				},
 			});
 
@@ -238,6 +246,23 @@ export async function enrollUserInSession(
 	});
 }
 
+export async function createEmailToken(
+	userId: string,
+	type: "EMAIL_VERIFICATION" | "PASSWORD_RESET" = "EMAIL_VERIFICATION",
+) {
+	const { generateRawToken, hashToken } = await import("@/lib/token");
+	const rawToken = generateRawToken();
+	await prisma.emailToken.create({
+		data: {
+			userId,
+			tokenHash: hashToken(rawToken),
+			type,
+			expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+		},
+	});
+	return rawToken;
+}
+
 export async function cleanupTestData() {
 	const maxRetries = 3;
 	let retryCount = 0;
@@ -248,6 +273,7 @@ export async function cleanupTestData() {
 			await prisma.sessionFacilitator.deleteMany();
 			await prisma.sessionPossibleDate.deleteMany();
 			await prisma.session.deleteMany();
+			await prisma.emailToken.deleteMany();
 			await prisma.user.deleteMany();
 			return;
 		} catch (error) {
@@ -261,7 +287,7 @@ export async function cleanupTestData() {
 
 			if (retryCount >= maxRetries) {
 				try {
-					await prisma.$executeRaw`TRUNCATE TABLE "SessionEnrollment", "SessionPossibleDate", "Session", "User" CASCADE`;
+					await prisma.$executeRaw`TRUNCATE TABLE "SessionEnrollment", "SessionPossibleDate", "Session", "EmailToken", "User" CASCADE`;
 					return;
 				} catch (truncateError) {
 					try {
@@ -269,6 +295,7 @@ export async function cleanupTestData() {
 						await prisma.$executeRaw`DELETE FROM "SessionEnrollment"`;
 						await prisma.$executeRaw`DELETE FROM "SessionPossibleDate"`;
 						await prisma.$executeRaw`DELETE FROM "Session"`;
+						await prisma.$executeRaw`DELETE FROM "EmailToken"`;
 						await prisma.$executeRaw`DELETE FROM "User"`;
 						await prisma.$executeRaw`SET CONSTRAINTS ALL IMMEDIATE`;
 						return;
