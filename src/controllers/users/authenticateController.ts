@@ -43,7 +43,9 @@ export async function authenticateController(req: Request, res: Response) {
 		) {
 			return res.status(404).json({
 				message:
-					error instanceof Error ? error.message : "Conta não cadastrada.",
+					error instanceof Error
+						? error.message
+						: "Conta Google não vinculada, crie uma conta para poder fazer login",
 				code: "REGISTRATION_REQUIRED",
 			});
 		}

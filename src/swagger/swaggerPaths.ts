@@ -163,7 +163,7 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 					},
 				},
 				"404": {
-					description: "Conta não cadastrada (login Google sem registro prévio)",
+					description: "Conta Google não vinculada (login sem registro prévio)",
 					content: {
 						"application/json": {
 							schema: {
@@ -171,7 +171,8 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 								properties: {
 									message: {
 										type: "string",
-										example: "Conta não cadastrada.",
+										example:
+											"Conta Google não vinculada, crie uma conta para poder fazer login",
 									},
 									code: {
 										type: "string",

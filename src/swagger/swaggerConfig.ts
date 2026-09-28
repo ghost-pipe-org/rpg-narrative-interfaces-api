@@ -236,7 +236,7 @@ const swaggerDefinition = {
 			LoginRequest: {
 				type: "object",
 				description:
-					"Envie email e password para login tradicional, ou googleIdToken (JWT do Google) para login via Google. Se o email do token existir sem googleId, o vínculo é feito automaticamente. Se não existir, retorna 404 com code REGISTRATION_REQUIRED e message Conta não cadastrada.",
+					"Envie email e password para login tradicional, ou googleIdToken (JWT do Google) para login via Google. Se o email do token existir sem googleId, o vínculo é feito automaticamente. Se não existir, retorna 404 com code REGISTRATION_REQUIRED e message Conta Google não vinculada, crie uma conta para poder fazer login.",
 				properties: {
 					email: {
 						type: "string",

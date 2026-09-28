@@ -1,5 +1,5 @@
 import { env } from "@/env/index";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 export interface SendMailInput {
 	to: string;
@@ -14,8 +14,8 @@ export interface SendMailResult {
 	sent: boolean;
 }
 
-function isResendConfigured() {
-	return Boolean(env.RESEND_API_KEY);
+function isGmailConfigured() {
+	return Boolean(env.GMAIL_USER && env.GMAIL_APP_PASSWORD);
 }
 
 export function isDevMailFallbackEnabled() {
@@ -33,9 +33,9 @@ export async function sendMail({
 		return { sent: false };
 	}
 
-	if (!isResendConfigured()) {
+	if (!isGmailConfigured()) {
 		console.warn(
-			`[mailer] RESEND_API_KEY not configured. Skipping email to ${to}: ${subject}`,
+			`[mailer] GMAIL_USER/GMAIL_APP_PASSWORD not configured. Skipping email to ${to}: ${subject}`,
 		);
 		if (devLink) {
 			console.warn(`[mailer] Dev link: ${devLink}`);
@@ -44,21 +44,25 @@ export async function sendMail({
 	}
 
 	try {
-		const resend = new Resend(env.RESEND_API_KEY);
-		const from =
-			env.RESEND_FROM || "Interfaces Narrativas <rpg.uepbpatos@gmail.com>";
+		const transporter = nodemailer.createTransport({
+			service: "gmail",
+			auth: {
+				user: env.GMAIL_USER,
+				pass: env.GMAIL_APP_PASSWORD,
+			},
+		});
 
-		const { error } = await resend.emails.send({
+		const from =
+			env.GMAIL_FROM ||
+			`Interfaces Narrativas <${env.GMAIL_USER}>`;
+
+		await transporter.sendMail({
 			from,
-			to: [to],
+			to,
 			subject,
 			text,
 			html,
 		});
-
-		if (error) {
-			throw new Error(error.message);
-		}
 
 		return { sent: true };
 	} catch (error) {

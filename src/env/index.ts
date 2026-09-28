@@ -13,8 +13,9 @@ const envSchema = z.object({
 	GOOGLE_CLIENT_ID: z.string().optional(),
 	FRONTEND_URL: z.string().url().default("http://localhost:5173"),
 
-	RESEND_API_KEY: z.string().optional(),
-	RESEND_FROM: z.string().optional(),
+	GMAIL_USER: z.string().email().optional(),
+	GMAIL_APP_PASSWORD: z.string().optional(),
+	GMAIL_FROM: z.string().optional(),
 });
 
 const _env = envSchema.safeParse(process.env);

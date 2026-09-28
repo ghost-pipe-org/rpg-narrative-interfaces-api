@@ -291,7 +291,9 @@ describe("Users Authentication", () => {
 				})
 				.expect(404);
 
-			expect(response.body.message).toBe("Conta não cadastrada.");
+			expect(response.body.message).toBe(
+				"Conta Google não vinculada, crie uma conta para poder fazer login",
+			);
 			expect(response.body.code).toBe("REGISTRATION_REQUIRED");
 		});
 
