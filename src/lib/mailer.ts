@@ -46,7 +46,7 @@ export async function sendMail({
 	try {
 		const resend = new Resend(env.RESEND_API_KEY);
 		const from =
-			env.RESEND_FROM || "Narrativas Interativas <onboarding@resend.dev>";
+			env.RESEND_FROM || "Interfaces Narrativas <rpg.uepbpatos@gmail.com>";
 
 		const { error } = await resend.emails.send({
 			from,

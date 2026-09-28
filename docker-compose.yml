@@ -28,7 +28,7 @@ services:
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost:5173}
       - NODE_ENV=dev
       - RESEND_API_KEY=${RESEND_API_KEY:-}
-      - RESEND_FROM=${RESEND_FROM:-Narrativas Interativas <onboarding@resend.dev>}
+      - RESEND_FROM=${RESEND_FROM:-Interfaces Narrativas <rpg.uepbpatos@gmail.com>}
     links:
       - postgres
     depends_on:
