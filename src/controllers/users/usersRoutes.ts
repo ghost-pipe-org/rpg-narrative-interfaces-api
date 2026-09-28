@@ -5,17 +5,21 @@ import { searchUserByEmailController } from "./searchUserByEmailController";
 import { updateUserEmailController } from "./updateUserEmailController";
 import { updateUserPasswordController } from "./updateUserPasswordController";
 
-import { type Express, Router } from "express";
+import { Router } from "express";
 import { validateAuthenticate } from "../middlewares/validateAuthenticate";
 import { validateJWT } from "../middlewares/validateJWT";
 import { validateRegister } from "../middlewares/validateRegister";
 import { validateUpdateProfile } from "../middlewares/validateUpdateProfile";
 import { authenticateController } from "./authenticateController";
+import { forgotPasswordController } from "./forgotPasswordController";
 import { getEmittedSessionsController } from "./getEmittedSessionsController";
 import { getEnrolledSessionsController } from "./getEnrolledSessionsController";
 import { getUserProfileController } from "./getUserProfileController";
 import { registerController } from "./registerController";
+import { resendVerificationController } from "./resendVerificationController";
+import { resetPasswordController } from "./resetPasswordController";
 import { updateUserProfileController } from "./updateUserProfileController";
+import { verifyEmailController } from "./verifyEmailController";
 
 const userRouter = Router();
 
@@ -25,6 +29,10 @@ userRouter.post(
 	validateAuthenticate,
 	authenticateController,
 );
+userRouter.post("/users/verify-email", verifyEmailController);
+userRouter.post("/users/resend-verification", resendVerificationController);
+userRouter.post("/users/forgot-password", forgotPasswordController);
+userRouter.post("/users/reset-password", resetPasswordController);
 
 // Protected routes
 userRouter.get(
