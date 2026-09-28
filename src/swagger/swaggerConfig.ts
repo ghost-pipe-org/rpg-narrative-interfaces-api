@@ -213,7 +213,8 @@ const swaggerDefinition = {
 			},
 			LoginRequest: {
 				type: "object",
-				required: ["email", "password"],
+				description:
+					"Envie email e password para login tradicional, ou googleIdToken (JWT do Google) para login via Google. Se o email do token existir sem googleId, o vínculo é feito automaticamente. Se não existir, retorna REGISTRATION_REQUIRED.",
 				properties: {
 					email: {
 						type: "string",
@@ -223,6 +224,11 @@ const swaggerDefinition = {
 					password: {
 						type: "string",
 						example: "senha123",
+					},
+					googleIdToken: {
+						type: "string",
+						example: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+						description: "ID token JWT retornado pelo Google Identity Services",
 					},
 				},
 			},

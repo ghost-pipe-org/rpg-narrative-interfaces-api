@@ -119,7 +119,8 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 		post: {
 			tags: ["Autenticação"],
 			summary: "Fazer login",
-			description: "Autentica um usuário e retorna um token JWT",
+			description:
+				"Autentica com email/senha ou com googleIdToken. No login Google, se o email do token já existir, vincula o googleId e autentica; se não existir, retorna 404 com code REGISTRATION_REQUIRED. Login por senha exige email verificado.",
 			requestBody: {
 				required: true,
 				content: {

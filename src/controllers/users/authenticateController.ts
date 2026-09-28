@@ -1,11 +1,13 @@
 import { env } from "@/env/index";
+import { EmailNotVerifiedError } from "@/services/errors/emailNotVerifiedError";
 import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
+import { UserRegistrationRequiredError } from "@/services/errors/userRegistrationRequiredError";
 import { makeAuthenticateService } from "@/services/factories/makeAuthenticateService";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
 export async function authenticateController(req: Request, res: Response) {
-	const { email, password } = req.body;
+	const { email, password, googleIdToken } = req.body;
 
 	try {
 		const authenticateService = makeAuthenticateService();
@@ -13,6 +15,7 @@ export async function authenticateController(req: Request, res: Response) {
 		const { user } = await authenticateService.execute({
 			email,
 			password,
+			googleIdToken,
 		});
 
 		const { JWT_SECRET } = env;
@@ -34,9 +37,22 @@ export async function authenticateController(req: Request, res: Response) {
 			user: userInfo,
 		});
 	} catch (error) {
+		if (error instanceof UserRegistrationRequiredError) {
+			return res.status(404).json({
+				message: error.message,
+				code: "REGISTRATION_REQUIRED",
+			});
+		}
+		if (error instanceof EmailNotVerifiedError) {
+			return res.status(403).json({
+				message: error.message,
+				code: "EMAIL_NOT_VERIFIED",
+			});
+		}
 		if (error instanceof InvalidCredentialsError) {
 			return res.status(400).json({ message: error.message });
 		}
+		console.error(error);
 		return res.status(500).json({ message: "Internal server error" });
 	}
 }

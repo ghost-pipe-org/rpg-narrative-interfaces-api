@@ -1,12 +1,19 @@
 import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
-const authenticateSchema = z
-	.object({
-		email: z.string().email({ message: "Invalid email address" }),
-		password: z.string(),
-	})
-	.strict();
+const authenticateSchema = z.union([
+	z
+		.object({
+			email: z.string().email({ message: "Invalid email address" }),
+			password: z.string(),
+		})
+		.strict(),
+	z
+		.object({
+			googleIdToken: z.string().min(1, { message: "googleIdToken is required" }),
+		})
+		.strict(),
+]);
 
 export const validateAuthenticate = (
 	req: Request,
