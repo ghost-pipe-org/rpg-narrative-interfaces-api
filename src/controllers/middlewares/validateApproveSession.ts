@@ -1,4 +1,5 @@
-﻿import type { NextFunction, Request, Response } from "express";
+﻿import { validationErrorBody } from "@/lib/validationError";
+import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
 const approveSessionSchema = z
@@ -17,8 +18,7 @@ export const validateApproveSession = (
 ) => {
 	const result = approveSessionSchema.safeParse(req.body);
 	if (!result.success) {
-		console.error("Validation errors:", result.error.errors);
-		return res.status(400).json({ errors: result.error.errors });
+		return res.status(400).json(validationErrorBody(result.error));
 	}
 	next();
 };

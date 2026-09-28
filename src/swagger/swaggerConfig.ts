@@ -209,6 +209,28 @@ const swaggerDefinition = {
 						type: "string",
 						example: "Erro na operação",
 					},
+					code: {
+						type: "string",
+						example: "VALIDATION_ERROR",
+						description:
+							"Código opcional para o cliente tratar o erro (ex.: VALIDATION_ERROR, REGISTRATION_REQUIRED, EMAIL_NOT_VERIFIED)",
+					},
+					errors: {
+						type: "array",
+						description:
+							"Detalhes de validação por campo (quando code = VALIDATION_ERROR)",
+						items: {
+							type: "object",
+							properties: {
+								path: {
+									type: "array",
+									items: { type: "string" },
+								},
+								message: { type: "string" },
+								code: { type: "string" },
+							},
+						},
+					},
 				},
 			},
 			LoginRequest: {

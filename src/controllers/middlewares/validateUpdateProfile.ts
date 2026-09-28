@@ -1,3 +1,4 @@
+import { validationErrorBody } from "@/lib/validationError";
 import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
@@ -53,10 +54,7 @@ export const validateUpdateProfile = (
 	const result = updateProfileSchema.safeParse(req.body);
 
 	if (!result.success) {
-		return res.status(400).json({
-			message: "Dados inválidos",
-			errors: result.error.errors,
-		});
+		return res.status(400).json(validationErrorBody(result.error));
 	}
 	req.body = result.data;
 	next();

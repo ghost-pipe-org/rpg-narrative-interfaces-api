@@ -160,7 +160,7 @@ describe("Users Authentication", () => {
 			expect(response.body.user).not.toHaveProperty("passwordHash");
 		});
 
-		it("should not authenticate unverified email", async () => {
+		it("should not authenticate unverified email and resend verification", async () => {
 			const user = await createUser({
 				email: "unverified@example.com",
 				password: "Password123",
@@ -176,6 +176,12 @@ describe("Users Authentication", () => {
 				.expect(403);
 
 			expect(response.body.code).toBe("EMAIL_NOT_VERIFIED");
+			expect(response.body.message).toContain("verificar o e-mail");
+
+			const tokens = await prisma.emailToken.findMany({
+				where: { userId: user.id, type: "EMAIL_VERIFICATION", usedAt: null },
+			});
+			expect(tokens.length).toBe(1);
 		});
 
 		it("should not authenticate user with invalid email", async () => {

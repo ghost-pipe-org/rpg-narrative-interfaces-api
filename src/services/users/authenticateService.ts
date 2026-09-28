@@ -5,6 +5,7 @@ import { compare } from "bcryptjs";
 import { EmailNotVerifiedError } from "../errors/emailNotVerifiedError";
 import { InvalidCredentialsError } from "../errors/invalidCredentialsError";
 import { UserRegistrationRequiredError } from "../errors/userRegistrationRequiredError";
+import type { ResendVerificationService } from "./resendVerificationService";
 
 interface AuthenticateRequest {
 	email?: string;
@@ -17,7 +18,10 @@ interface AuthenticateResponse {
 }
 
 export class AuthenticateService {
-	constructor(private userRepository: UsersRepository) {}
+	constructor(
+		private userRepository: UsersRepository,
+		private resendVerificationService: ResendVerificationService,
+	) {}
 
 	async execute({
 		email,
@@ -37,7 +41,7 @@ export class AuthenticateService {
 				}
 
 				if (!userByGoogleId.emailVerified) {
-					throw new EmailNotVerifiedError();
+					await this.resendVerificationAndReject(userByGoogleId.email);
 				}
 
 				return { user: userByGoogleId };
@@ -84,11 +88,16 @@ export class AuthenticateService {
 		}
 
 		if (!user.emailVerified) {
-			throw new EmailNotVerifiedError();
+			await this.resendVerificationAndReject(user.email);
 		}
 
 		return {
 			user,
 		};
+	}
+
+	private async resendVerificationAndReject(email: string): Promise<never> {
+		await this.resendVerificationService.execute({ email });
+		throw new EmailNotVerifiedError();
 	}
 }

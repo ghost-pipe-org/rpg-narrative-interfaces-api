@@ -1,4 +1,5 @@
 ﻿import { makeForgotPasswordService } from "@/services/factories/makeForgotPasswordService";
+import { validationErrorBody } from "@/lib/validationError";
 import type { Request, Response } from "express";
 import { z } from "zod";
 
@@ -11,7 +12,7 @@ const schema = z
 export async function forgotPasswordController(req: Request, res: Response) {
 	const parsed = schema.safeParse(req.body);
 	if (!parsed.success) {
-		return res.status(400).json({ errors: parsed.error.errors });
+		return res.status(400).json(validationErrorBody(parsed.error));
 	}
 
 	try {

@@ -1,5 +1,6 @@
 ﻿import { InvalidTokenError } from "@/services/errors/invalidTokenError";
 import { makeResetPasswordService } from "@/services/factories/makeResetPasswordService";
+import { validationErrorBody } from "@/lib/validationError";
 import type { Request, Response } from "express";
 import { z } from "zod";
 
@@ -21,7 +22,7 @@ const schema = z
 export async function resetPasswordController(req: Request, res: Response) {
 	const parsed = schema.safeParse(req.body);
 	if (!parsed.success) {
-		return res.status(400).json({ errors: parsed.error.errors });
+		return res.status(400).json(validationErrorBody(parsed.error));
 	}
 
 	try {

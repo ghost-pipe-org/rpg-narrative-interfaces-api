@@ -1,4 +1,5 @@
-﻿import type { NextFunction, Request, Response } from "express";
+﻿import { validationErrorBody } from "@/lib/validationError";
+import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
 const passwordSchema = z
@@ -11,11 +12,7 @@ const passwordSchema = z
 
 const baseFields = {
 	name: z.string().min(1, { message: "Nome é obrigatório" }),
-	enrollment: z
-		.string()
-		.regex(/^\d{9}$/)
-		.or(z.literal(""))
-		.optional(),
+	enrollment: z.string().optional(),
 	phoneNumber: z
 		.string()
 		.regex(/^\d{10,11}$/, {
@@ -26,43 +23,56 @@ const baseFields = {
 	masterConfirm: z.boolean().optional(),
 };
 
-const masterEnrollmentRefine = {
-	check: (data: { masterConfirm?: boolean; enrollment?: string }) => {
-		if (data.masterConfirm === true) {
-			return (
-				!!data.enrollment &&
-				data.enrollment.length === 9 &&
-				/^\d{9}$/.test(data.enrollment)
-			);
+const MASTER_ENROLLMENT_MESSAGE =
+	"Para se registrar como mestre, é necessário fornecer uma matrícula válida de 9 dígitos";
+
+function withEnrollmentRules<
+	T extends z.ZodType<{ masterConfirm?: boolean; enrollment?: string }>,
+>(schema: T) {
+	return schema.superRefine((data, ctx) => {
+		const enrollment = data.enrollment?.trim() ?? "";
+		const hasEnrollment = enrollment.length > 0;
+		const isValidEnrollment = /^\d{9}$/.test(enrollment);
+
+		if (hasEnrollment && !isValidEnrollment) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: "Matrícula deve ter exatamente 9 dígitos",
+				path: ["enrollment"],
+			});
+			return;
 		}
-		return true;
-	},
-	message:
-		"Para se registrar como mestre, é necessário fornecer uma matrícula válida de 9 dígitos",
-};
+
+		if (data.masterConfirm === true && !isValidEnrollment) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: MASTER_ENROLLMENT_MESSAGE,
+				path: ["enrollment"],
+			});
+		}
+	});
+}
 
 const registerSchema = z.union([
-	z
-		.object({
-			...baseFields,
-			email: z.string().email({ message: "Endereço de e-mail inválido" }),
-			password: passwordSchema,
-		})
-		.strict()
-		.refine(masterEnrollmentRefine.check, {
-			message: masterEnrollmentRefine.message,
-			path: ["enrollment"],
-		}),
-	z
-		.object({
-			...baseFields,
-			googleIdToken: z.string().min(1, { message: "googleIdToken é obrigatório" }),
-		})
-		.strict()
-		.refine(masterEnrollmentRefine.check, {
-			message: masterEnrollmentRefine.message,
-			path: ["enrollment"],
-		}),
+	withEnrollmentRules(
+		z
+			.object({
+				...baseFields,
+				email: z.string().email({ message: "Endereço de e-mail inválido" }),
+				password: passwordSchema,
+			})
+			.strict(),
+	),
+	withEnrollmentRules(
+		z
+			.object({
+				...baseFields,
+				googleIdToken: z
+					.string()
+					.min(1, { message: "googleIdToken é obrigatório" }),
+			})
+			.strict(),
+	),
 ]);
 
 export const validateRegister = (
@@ -72,8 +82,7 @@ export const validateRegister = (
 ) => {
 	const result = registerSchema.safeParse(req.body);
 	if (!result.success) {
-		console.error("Validation errors:", result.error.errors);
-		return res.status(400).json({ errors: result.error.errors });
+		return res.status(400).json(validationErrorBody(result.error));
 	}
 	next();
 };
