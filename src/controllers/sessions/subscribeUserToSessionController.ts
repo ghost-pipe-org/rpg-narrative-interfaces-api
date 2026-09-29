@@ -1,4 +1,4 @@
-import { AlreadyEnrolledError } from "@/services/errors/alreadyEnrolledError";
+﻿import { AlreadyEnrolledError } from "@/services/errors/alreadyEnrolledError";
 import { EnrollmentClosedError } from "@/services/errors/enrollmentClosedError";
 import { InvalidSessionError } from "@/services/errors/invalidSessionError";
 import { InvalidUserError } from "@/services/errors/invalidUserError";
@@ -24,13 +24,13 @@ export async function subscribeUserToSessionController(
 
 		return res
 			.status(200)
-			.json({ message: "User subscribed to session successfully" });
+			.json({ message: "Usuário inscrito na sessão com sucesso" });
 	} catch (error) {
 		if (error instanceof InvalidSessionError) {
-			return res.status(404).json({ message: "Session not found" });
+			return res.status(404).json({ message: "Sessão não encontrada" });
 		}
 		if (error instanceof InvalidUserError) {
-			return res.status(404).json({ message: "User not found" });
+			return res.status(404).json({ message: "Usuário não encontrado" });
 		}
 		if (error instanceof EnrollmentClosedError) {
 			return res.status(403).json({ message: error.message });
@@ -41,15 +41,15 @@ export async function subscribeUserToSessionController(
 		if (error instanceof AlreadyEnrolledError) {
 			return res
 				.status(409)
-				.json({ message: "User already subscribed to this session" });
+				.json({ message: "Usuário já está inscrito nesta sessão" });
 		}
 		if (error instanceof SessionFullError) {
 			return res
 				.status(409)
-				.json({ message: "Session has reached maximum capacity" });
+				.json({ message: "A sessão atingiu a capacidade máxima" });
 		}
 
 		console.error("Error subscribing user to session:", error);
-		return res.status(500).json({ message: "Internal server error" });
+		return res.status(500).json({ message: "Erro interno no servidor" });
 	}
 }

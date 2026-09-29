@@ -1,4 +1,4 @@
-import { makeAvaliableSessionsService } from "@/services/factories/makeAvaliableSessionsService";
+﻿import { makeAvaliableSessionsService } from "@/services/factories/makeAvaliableSessionsService";
 import type { Request, Response } from "express";
 
 export async function getAvaliableSessionsController(
@@ -12,6 +12,6 @@ export async function getAvaliableSessionsController(
 		return res.status(200).json({ data: sessions });
 	} catch (error) {
 		console.error("Error fetching available sessions:", error);
-		return res.status(500).json({ message: "Internal server error" });
+		return res.status(500).json({ message: "Erro interno no servidor" });
 	}
 }

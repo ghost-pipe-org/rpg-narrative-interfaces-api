@@ -1,4 +1,4 @@
-import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
+﻿import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
 import { InvalidUserError } from "@/services/errors/invalidUserError";
 import { UserAlreadyExistsError } from "@/services/errors/userAlreadyExistsError";
 import { makeUpdateUserEmailService } from "@/services/factories/makeUpdateUserEmailService";
@@ -18,7 +18,7 @@ export async function updateUserEmailController(req: Request, res: Response) {
 		});
 
 		return res.status(200).json({
-			message: "Email atualizado com sucesso",
+			message: "E-mail atualizado com sucesso",
 			data: user,
 		});
 	} catch (error) {
@@ -36,13 +36,13 @@ export async function updateUserEmailController(req: Request, res: Response) {
 
 		if (error instanceof UserAlreadyExistsError) {
 			return res.status(409).json({
-				message: "O endereço de email fornecido já está em uso",
+				message: "O endereço de e-mail fornecido já está em uso",
 			});
 		}
 
 		console.error("Error updating user email:", error);
 		return res.status(500).json({
-			message: "Erro interno do servidor ao atualizar o email",
+			message: "Erro interno no servidor ao atualizar o e-mail",
 		});
 	}
 }

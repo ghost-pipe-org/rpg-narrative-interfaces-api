@@ -1,4 +1,4 @@
-import request from "supertest";
+﻿import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
 import app from "../../app";
 import {
@@ -85,7 +85,7 @@ describe("Session Administration Routes", () => {
 				.expect(200);
 
 			expect(response.body).toHaveProperty("message");
-			expect(response.body.message).toBe("Session Approved successfully");
+			expect(response.body.message).toBe("Sessão aprovada com sucesso");
 		});
 
 		it("should not allow master to approve session", async () => {
@@ -210,7 +210,7 @@ describe("Session Administration Routes", () => {
 				.expect(200);
 
 			expect(response.body).toHaveProperty("message");
-			expect(response.body.message).toBe("Session rejected successfully");
+			expect(response.body.message).toBe("Sessão rejeitada com sucesso");
 		});
 
 		it("should not allow master to reject session", async () => {
@@ -245,7 +245,7 @@ describe("Session Administration Routes", () => {
 				.expect(200);
 
 			expect(response.body).toHaveProperty("message");
-			expect(response.body.message).toBe("Session rejected successfully");
+			expect(response.body.message).toBe("Sessão rejeitada com sucesso");
 		});
 
 		it("should not reject non-existent session", async () => {

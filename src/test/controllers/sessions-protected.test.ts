@@ -1,4 +1,4 @@
-import request from "supertest";
+﻿import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
 import app from "../../app";
 import {
@@ -226,7 +226,7 @@ describe("Protected Sessions Routes", () => {
 
 			expect(response.body).toHaveProperty("message");
 			expect(response.body.message).toBe(
-				"User unsubscribed from session successfully",
+				"Inscrição na sessão cancelada com sucesso",
 			);
 		});
 

@@ -17,6 +17,8 @@ export default defineConfig({
 			DATABASE_URL: "postgresql://test:1234@localhost:5433/test",
 			NODE_ENV: "test",
 			JWT_SECRET: "test-jwt-secret-for-testing-only",
+			FRONTEND_URL: "http://localhost:5173",
+			GOOGLE_CLIENT_ID: "test-google-client-id",
 		},
 		testTimeout: 60000, // Aumentar para 60s
 		hookTimeout: 60000, // Aumentar para 60s

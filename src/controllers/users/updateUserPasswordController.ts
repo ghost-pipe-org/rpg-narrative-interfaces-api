@@ -1,4 +1,4 @@
-import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
+﻿import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
 import { InvalidUserError } from "@/services/errors/invalidUserError";
 import { makeUpdateUserPasswordService } from "@/services/factories/makeUpdateUserPasswordService";
 import type { Request, Response } from "express";
@@ -37,7 +37,7 @@ export async function updateUserPasswordController(
 
 		console.error("Error updating user password:", error);
 		return res.status(500).json({
-			message: "Erro interno do servidor ao atualizar a senha",
+			message: "Erro interno no servidor ao atualizar a senha",
 		});
 	}
 }

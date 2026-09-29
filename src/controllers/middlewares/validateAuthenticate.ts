@@ -1,12 +1,20 @@
+﻿import { validationErrorBody } from "@/lib/validationError";
 import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
-const authenticateSchema = z
-	.object({
-		email: z.string().email({ message: "Invalid email address" }),
-		password: z.string(),
-	})
-	.strict();
+const authenticateSchema = z.union([
+	z
+		.object({
+			email: z.string().email({ message: "Endereço de e-mail inválido" }),
+			password: z.string(),
+		})
+		.strict(),
+	z
+		.object({
+			googleIdToken: z.string().min(1, { message: "googleIdToken é obrigatório" }),
+		})
+		.strict(),
+]);
 
 export const validateAuthenticate = (
 	req: Request,
@@ -15,7 +23,7 @@ export const validateAuthenticate = (
 ) => {
 	const result = authenticateSchema.safeParse(req.body);
 	if (!result.success) {
-		return res.status(400).json({ errors: result.error.errors });
+		return res.status(400).json(validationErrorBody(result.error));
 	}
 	next();
 };

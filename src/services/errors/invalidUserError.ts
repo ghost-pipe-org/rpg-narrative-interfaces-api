@@ -1,6 +1,6 @@
 export class InvalidUserError extends Error {
 	constructor() {
-		super("Invalid User.");
+		super("Usuário inválido.");
 		this.name = "InvalidUserError";
 	}
 }

@@ -9,6 +9,12 @@ export class PrismaUsersRepository implements UsersRepository {
 		});
 		return user;
 	}
+	async findByGoogleId(googleId: string) {
+		const user = await prisma.user.findUnique({
+			where: { googleId },
+		});
+		return user;
+	}
 	async create(data: Prisma.UserCreateInput) {
 		const user = await prisma.user.create({
 			data,
@@ -26,7 +32,7 @@ export class PrismaUsersRepository implements UsersRepository {
 			where: { id },
 			data: {
 				...data,
-				updatedAt: new Date(), // Força atualização do timestamp
+				updatedAt: new Date(),
 			},
 		});
 		return user;

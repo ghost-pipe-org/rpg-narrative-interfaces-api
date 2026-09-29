@@ -1,4 +1,4 @@
-import type { SessionsRepository } from "@/repositories/sessionsRepository";
+﻿import type { SessionsRepository } from "@/repositories/sessionsRepository";
 import type { UsersRepository } from "@/repositories/usersRepository";
 import { AlreadyEnrolledError } from "../errors/alreadyEnrolledError";
 import { EnrollmentClosedError } from "../errors/enrollmentClosedError";
@@ -95,7 +95,7 @@ export class SubscribeUserToSessionService {
 
 		return {
 			success: true,
-			message: "User successfully subscribed to the session.",
+			message: "Usuário inscrito na sessão com sucesso.",
 		};
 	}
 }

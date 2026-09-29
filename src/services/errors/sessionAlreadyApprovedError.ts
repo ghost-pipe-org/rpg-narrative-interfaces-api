@@ -1,6 +1,6 @@
 export class SessionAlreadyApprovedError extends Error {
 	constructor() {
-		super("Session already approved.");
+		super("Sessão já aprovada.");
 		this.name = "SessionAlreadyApprovedError";
 	}
 }

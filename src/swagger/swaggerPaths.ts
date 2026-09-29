@@ -1,4 +1,4 @@
-import type { OpenAPIV3 } from "openapi-types";
+﻿import type { OpenAPIV3 } from "openapi-types";
 import { swaggerSpec } from "./swaggerConfig";
 
 // Definições das rotas da API
@@ -92,7 +92,7 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 								masterEnrollment: {
 									summary: "Matrícula obrigatória para mestres",
 									value: {
-										message: "Masters require enrollment",
+										message: "Mestres precisam informar matrícula",
 									},
 								},
 							},
@@ -107,7 +107,7 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 								$ref: "#/components/schemas/Error",
 							},
 							example: {
-								message: "User with this email already exists",
+								message: "Já existe um usuário com este e-mail",
 							},
 						},
 					},
@@ -119,7 +119,8 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 		post: {
 			tags: ["Autenticação"],
 			summary: "Fazer login",
-			description: "Autentica um usuário e retorna um token JWT",
+			description:
+				"Autentica com email/senha ou com googleIdToken. No login Google, se o email do token já existir, vincula o googleId e autentica; se não existir, retorna 404 com code REGISTRATION_REQUIRED. Login por senha exige email verificado.",
 			requestBody: {
 				required: true,
 				content: {
@@ -147,6 +148,37 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 						"application/json": {
 							schema: {
 								$ref: "#/components/schemas/Error",
+							},
+						},
+					},
+				},
+				"403": {
+					description: "Email não verificado",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/Error",
+							},
+						},
+					},
+				},
+				"404": {
+					description: "Conta Google não vinculada (login sem registro prévio)",
+					content: {
+						"application/json": {
+							schema: {
+								type: "object",
+								properties: {
+									message: {
+										type: "string",
+										example:
+											"Conta Google não vinculada, crie uma conta para poder fazer login",
+									},
+									code: {
+										type: "string",
+										example: "REGISTRATION_REQUIRED",
+									},
+								},
 							},
 						},
 					},
@@ -373,7 +405,7 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 								pendingSession: {
 									summary: "Sessão pendente existe",
 									value: {
-										message: "Master already has a pending session",
+										message: "O mestre já possui uma sessão pendente",
 									},
 								},
 							},
@@ -855,7 +887,7 @@ export const swaggerPaths: OpenAPIV3.PathsObject = {
 								properties: {
 									message: {
 										type: "string",
-										example: "Profile updated successfully",
+										example: "Perfil atualizado com sucesso",
 									},
 									user: { $ref: "#/components/schemas/User" },
 								},

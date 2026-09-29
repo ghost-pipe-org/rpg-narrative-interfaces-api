@@ -24,6 +24,13 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
       - DATABASE_URL=postgres://postgres:1234@postgres:5432/rpg-system-backend
+      - JWT_SECRET=${JWT_SECRET:-dev-jwt-secret-change-me}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:5173}
+      - NODE_ENV=dev
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GMAIL_USER=${GMAIL_USER:-}
+      - GMAIL_APP_PASSWORD=${GMAIL_APP_PASSWORD:-}
+      - GMAIL_FROM=${GMAIL_FROM:-Interfaces Narrativas <rpg.uepbpatos@gmail.com>}
     links:
       - postgres
     depends_on:

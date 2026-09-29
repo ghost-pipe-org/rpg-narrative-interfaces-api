@@ -10,30 +10,41 @@ export class InMemoryUsersRepository implements UsersRepository {
 		return user || null;
 	}
 
+	async findByGoogleId(googleId: string) {
+		const user = this.items.find((user) => user.googleId === googleId);
+		return user || null;
+	}
+
 	async findById(id: string) {
 		const user = this.items.find((user) => user.id === id);
 		return user || null;
 	}
 
 	async create(data: Prisma.UserCreateInput) {
-		const user = {
+		const user: User = {
 			id: randomUUID(),
 			name: data.name,
 			email: data.email,
-			passwordHash: data.passwordHash,
+			passwordHash:
+				typeof data.passwordHash === "string" ? data.passwordHash : null,
+			googleId: typeof data.googleId === "string" ? data.googleId : null,
+			emailVerified: data.emailVerified ?? false,
 			role: data.role ?? "PLAYER",
-			enrollment: data.enrollment ?? null,
-			phoneNumber: data.phoneNumber ?? null,
+			enrollment:
+				typeof data.enrollment === "string" ? data.enrollment : null,
+			phoneNumber:
+				typeof data.phoneNumber === "string" ? data.phoneNumber : null,
 			createdAt: new Date(),
 			updatedAt: new Date(),
 		};
 		this.items.push(user);
 		return user;
 	}
+
 	async update(id: string, data: Prisma.UserUpdateInput): Promise<User> {
 		const userIndex = this.items.findIndex((user) => user.id === id);
 		if (userIndex === -1) {
-			throw new Error(`User with id ${id} not found`);
+			throw new Error(`Usuário com id ${id} não encontrado`);
 		}
 
 		const currentUser = this.items[userIndex];
@@ -44,7 +55,19 @@ export class InMemoryUsersRepository implements UsersRepository {
 			passwordHash:
 				typeof data.passwordHash === "string"
 					? data.passwordHash
-					: currentUser.passwordHash,
+					: data.passwordHash === null
+						? null
+						: currentUser.passwordHash,
+			googleId:
+				typeof data.googleId === "string"
+					? data.googleId
+					: data.googleId === null
+						? null
+						: currentUser.googleId,
+			emailVerified:
+				typeof data.emailVerified === "boolean"
+					? data.emailVerified
+					: currentUser.emailVerified,
 			role: typeof data.role === "string" ? data.role : currentUser.role,
 			enrollment:
 				typeof data.enrollment === "string"
