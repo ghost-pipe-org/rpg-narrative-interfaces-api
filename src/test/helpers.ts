@@ -2,6 +2,7 @@ import { generateRawToken, hashToken } from "@/lib/token";
 import { PrismaClient } from "@prisma/client";
 import type {
 	EnrollmentStatus,
+	PostStatus,
 	SessionPeriod,
 	SessionStatus,
 	UserRole,
@@ -233,6 +234,78 @@ export async function createSessionWithDates(
 	return session;
 }
 
+export interface TestCategory {
+	id: string;
+	name: string;
+	slug: string;
+}
+
+export interface TestPost {
+	id: string;
+	title: string;
+	slug: string;
+	content: string;
+	status: PostStatus;
+	authorId: string;
+}
+
+export async function createCategory(
+	data: Partial<TestCategory> = {},
+): Promise<TestCategory> {
+	const uniqueId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+
+	const category = await prisma.category.create({
+		data: {
+			name: data.name || `Category ${uniqueId}`,
+			slug: data.slug || `category-${uniqueId}`,
+		},
+	});
+
+	return {
+		id: category.id,
+		name: category.name,
+		slug: category.slug,
+	};
+}
+
+export async function createPost(
+	data: Partial<TestPost> & { authorId: string; categoryIds?: string[] },
+): Promise<TestPost> {
+	const uniqueId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+	const status = data.status || ("PUBLICADO" as PostStatus);
+
+	const post = await prisma.post.create({
+		data: {
+			title: data.title || "Test Post",
+			slug: data.slug || `test-post-${uniqueId}`,
+			content: data.content || "Test post content",
+			status,
+			publishedAt: status === "PUBLICADO" ? new Date() : null,
+			author: {
+				connect: {
+					id: data.authorId,
+				},
+			},
+			categories: data.categoryIds?.length
+				? {
+						create: data.categoryIds.map((categoryId) => ({
+							categoryId,
+						})),
+					}
+				: undefined,
+		},
+	});
+
+	return {
+		id: post.id,
+		title: post.title,
+		slug: post.slug,
+		content: post.content,
+		status: post.status,
+		authorId: data.authorId,
+	};
+}
+
 export async function enrollUserInSession(
 	userId: string,
 	sessionId: string,
@@ -269,6 +342,9 @@ export async function cleanupTestData() {
 
 	while (retryCount < maxRetries) {
 		try {
+			await prisma.postCategory.deleteMany();
+			await prisma.post.deleteMany();
+			await prisma.category.deleteMany();
 			await prisma.sessionEnrollment.deleteMany();
 			await prisma.sessionFacilitator.deleteMany();
 			await prisma.sessionPossibleDate.deleteMany();
@@ -287,12 +363,16 @@ export async function cleanupTestData() {
 
 			if (retryCount >= maxRetries) {
 				try {
-					await prisma.$executeRaw`TRUNCATE TABLE "SessionEnrollment", "SessionPossibleDate", "Session", "EmailToken", "User" CASCADE`;
+					await prisma.$executeRaw`TRUNCATE TABLE "PostCategory", "Post", "Category", "SessionEnrollment", "SessionFacilitator", "SessionPossibleDate", "Session", "EmailToken", "User" CASCADE`;
 					return;
 				} catch (truncateError) {
 					try {
 						await prisma.$executeRaw`SET CONSTRAINTS ALL DEFERRED`;
+						await prisma.$executeRaw`DELETE FROM "PostCategory"`;
+						await prisma.$executeRaw`DELETE FROM "Post"`;
+						await prisma.$executeRaw`DELETE FROM "Category"`;
 						await prisma.$executeRaw`DELETE FROM "SessionEnrollment"`;
+						await prisma.$executeRaw`DELETE FROM "SessionFacilitator"`;
 						await prisma.$executeRaw`DELETE FROM "SessionPossibleDate"`;
 						await prisma.$executeRaw`DELETE FROM "Session"`;
 						await prisma.$executeRaw`DELETE FROM "EmailToken"`;
