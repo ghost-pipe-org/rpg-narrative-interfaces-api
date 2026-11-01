@@ -1,7 +1,8 @@
 ﻿import { env } from "@/env/index";
-import { buildVerificationEmail, sendMail } from "@/lib/mailer";
 import { verifyGoogleIdToken } from "@/lib/googleAuth";
 import { generateRawToken, hashToken } from "@/lib/token";
+import type { MailService } from "@/mail/mailService";
+import { buildVerificationEmail } from "@/mail/templates";
 import type { EmailTokensRepository } from "@/repositories/emailTokensRepository";
 import type { UsersRepository } from "@/repositories/usersRepository";
 import type { User, UserRole } from "@prisma/client";
@@ -28,6 +29,7 @@ export class RegisterService {
 	constructor(
 		private usersRepository: UsersRepository,
 		private emailTokensRepository: EmailTokensRepository,
+		private mailService: MailService,
 	) {}
 
 	async execute({
@@ -115,11 +117,7 @@ export class RegisterService {
 
 		const verifyUrl = `${env.FRONTEND_URL}/verify-email?token=${rawToken}`;
 		const mail = buildVerificationEmail(user.name, verifyUrl);
-		await sendMail({
-			to: user.email,
-			...mail,
-			devLink: verifyUrl,
-		});
+		await this.mailService.send({ to: user.email, ...mail });
 
 		return {
 			user,

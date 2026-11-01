@@ -11,7 +11,9 @@ const authenticateSchema = z.union([
 		.strict(),
 	z
 		.object({
-			googleIdToken: z.string().min(1, { message: "googleIdToken é obrigatório" }),
+			googleIdToken: z
+				.string()
+				.min(1, { message: "googleIdToken é obrigatório" }),
 		})
 		.strict(),
 ]);

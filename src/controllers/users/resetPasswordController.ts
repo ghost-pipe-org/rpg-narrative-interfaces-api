@@ -1,6 +1,6 @@
-﻿import { InvalidTokenError } from "@/services/errors/invalidTokenError";
+﻿import { validationErrorBody } from "@/lib/validationError";
+import { InvalidTokenError } from "@/services/errors/invalidTokenError";
 import { makeResetPasswordService } from "@/services/factories/makeResetPasswordService";
-import { validationErrorBody } from "@/lib/validationError";
 import type { Request, Response } from "express";
 import { z } from "zod";
 

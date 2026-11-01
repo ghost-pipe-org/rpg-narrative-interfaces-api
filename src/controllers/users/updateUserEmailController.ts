@@ -1,4 +1,4 @@
-﻿import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
+import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
 import { InvalidUserError } from "@/services/errors/invalidUserError";
 import { UserAlreadyExistsError } from "@/services/errors/userAlreadyExistsError";
 import { makeUpdateUserEmailService } from "@/services/factories/makeUpdateUserEmailService";
@@ -11,14 +11,17 @@ export async function updateUserEmailController(req: Request, res: Response) {
 		const userId = (req.user as { id: string }).id;
 		const { currentPassword, newEmail } = req.body;
 
-		const { user } = await updateUserEmailService.execute({
+		const { user, pendingConfirmation } = await updateUserEmailService.execute({
 			userId,
 			currentPasswordRaw: currentPassword,
 			newEmail,
 		});
 
 		return res.status(200).json({
-			message: "E-mail atualizado com sucesso",
+			message: pendingConfirmation
+				? "Enviamos um link de confirmação para o novo e-mail. O endereço atual será mantido até a confirmação."
+				: "O e-mail informado já é o endereço atual da conta.",
+			pendingConfirmation,
 			data: user,
 		});
 	} catch (error) {

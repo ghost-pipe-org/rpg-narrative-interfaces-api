@@ -30,8 +30,7 @@ export class InMemoryUsersRepository implements UsersRepository {
 			googleId: typeof data.googleId === "string" ? data.googleId : null,
 			emailVerified: data.emailVerified ?? false,
 			role: data.role ?? "PLAYER",
-			enrollment:
-				typeof data.enrollment === "string" ? data.enrollment : null,
+			enrollment: typeof data.enrollment === "string" ? data.enrollment : null,
 			phoneNumber:
 				typeof data.phoneNumber === "string" ? data.phoneNumber : null,
 			createdAt: new Date(),

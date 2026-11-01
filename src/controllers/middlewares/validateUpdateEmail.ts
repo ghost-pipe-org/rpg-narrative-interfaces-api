@@ -21,9 +21,9 @@ export const validateUpdateEmail = (
 	const result = updateEmailSchema.safeParse(req.body);
 
 	if (!result.success) {
-		return res.status(400).json(
-			validationErrorBody(result.error, "Dados de e-mail inválidos"),
-		);
+		return res
+			.status(400)
+			.json(validationErrorBody(result.error, "Dados de e-mail inválidos"));
 	}
 	req.body = result.data;
 	next();

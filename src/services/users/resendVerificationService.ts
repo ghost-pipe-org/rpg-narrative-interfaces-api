@@ -1,6 +1,7 @@
 import { env } from "@/env/index";
-import { buildVerificationEmail, sendMail } from "@/lib/mailer";
 import { generateRawToken, hashToken } from "@/lib/token";
+import type { MailService } from "@/mail/mailService";
+import { buildVerificationEmail } from "@/mail/templates";
 import type { EmailTokensRepository } from "@/repositories/emailTokensRepository";
 import type { UsersRepository } from "@/repositories/usersRepository";
 
@@ -16,6 +17,7 @@ export class ResendVerificationService {
 	constructor(
 		private usersRepository: UsersRepository,
 		private emailTokensRepository: EmailTokensRepository,
+		private mailService: MailService,
 	) {}
 
 	async execute({
@@ -46,12 +48,8 @@ export class ResendVerificationService {
 
 		const verifyUrl = `${env.FRONTEND_URL}/verify-email?token=${rawToken}`;
 		const mail = buildVerificationEmail(user.name, verifyUrl);
-		const { sent } = await sendMail({
-			to: user.email,
-			...mail,
-			devLink: verifyUrl,
-		});
+		await this.mailService.send({ to: user.email, ...mail });
 
-		return { sent };
+		return { sent: true };
 	}
 }

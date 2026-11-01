@@ -1,3 +1,4 @@
+import { generateRawToken, hashToken } from "@/lib/token";
 import { PrismaClient } from "@prisma/client";
 import type {
 	EnrollmentStatus,
@@ -250,7 +251,6 @@ export async function createEmailToken(
 	userId: string,
 	type: "EMAIL_VERIFICATION" | "PASSWORD_RESET" = "EMAIL_VERIFICATION",
 ) {
-	const { generateRawToken, hashToken } = await import("@/lib/token");
 	const rawToken = generateRawToken();
 	await prisma.emailToken.create({
 		data: {

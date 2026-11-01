@@ -12,6 +12,12 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:7-alpine
+    container_name: rpg-system-redis
+    ports:
+      - "6379:6379"
+
   app:
     build: .
     command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start"
@@ -28,6 +34,7 @@ services:
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost:5173}
       - NODE_ENV=dev
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - REDIS_URL=redis://redis:6379
       - GMAIL_USER=${GMAIL_USER:-}
       - GMAIL_APP_PASSWORD=${GMAIL_APP_PASSWORD:-}
       - GMAIL_FROM=${GMAIL_FROM:-Interfaces Narrativas <rpg.uepbpatos@gmail.com>}
@@ -35,6 +42,7 @@ services:
       - postgres
     depends_on:
       - postgres
+      - redis
 
 volumes:
   data:

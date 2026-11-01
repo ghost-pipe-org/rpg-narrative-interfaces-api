@@ -7,11 +7,14 @@ export class PrismaEmailTokensRepository implements EmailTokensRepository {
 		return prisma.emailToken.create({ data });
 	}
 
-	async findValidByTokenHash(tokenHash: string, type: EmailTokenType) {
+	async findValidByTokenHash(
+		tokenHash: string,
+		type: EmailTokenType | EmailTokenType[],
+	) {
 		return prisma.emailToken.findFirst({
 			where: {
 				tokenHash,
-				type,
+				type: Array.isArray(type) ? { in: type } : type,
 				usedAt: null,
 				expiresAt: { gt: new Date() },
 			},

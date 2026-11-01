@@ -1,10 +1,7 @@
 import { env } from "@/env/index";
-import {
-	buildPasswordResetEmail,
-	isDevMailFallbackEnabled,
-	sendMail,
-} from "@/lib/mailer";
 import { generateRawToken, hashToken } from "@/lib/token";
+import type { MailService } from "@/mail/mailService";
+import { buildPasswordResetEmail } from "@/mail/templates";
 import type { EmailTokensRepository } from "@/repositories/emailTokensRepository";
 import type { UsersRepository } from "@/repositories/usersRepository";
 
@@ -12,21 +9,18 @@ interface ForgotPasswordRequest {
 	email: string;
 }
 
-interface ForgotPasswordResponse {
-	devLink?: string;
-}
-
 export class ForgotPasswordService {
 	constructor(
 		private usersRepository: UsersRepository,
 		private emailTokensRepository: EmailTokensRepository,
+		private mailService: MailService,
 	) {}
 
-	async execute({ email }: ForgotPasswordRequest): Promise<ForgotPasswordResponse> {
+	async execute({ email }: ForgotPasswordRequest): Promise<void> {
 		const user = await this.usersRepository.findByEmail(email);
 
 		if (!user || !user.passwordHash) {
-			return {};
+			return;
 		}
 
 		await this.emailTokensRepository.invalidateUserTokens(
@@ -47,14 +41,6 @@ export class ForgotPasswordService {
 
 		const resetUrl = `${env.FRONTEND_URL}/reset-password?token=${rawToken}`;
 		const mail = buildPasswordResetEmail(user.name, resetUrl);
-		const { sent } = await sendMail({
-			to: user.email,
-			...mail,
-			devLink: resetUrl,
-		});
-
-		return {
-			devLink: !sent && isDevMailFallbackEnabled() ? resetUrl : undefined,
-		};
+		await this.mailService.send({ to: user.email, ...mail });
 	}
 }

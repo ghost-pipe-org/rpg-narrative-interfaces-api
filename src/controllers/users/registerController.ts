@@ -1,7 +1,7 @@
 ﻿import { env } from "@/env/index";
+import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
 import { MasterRequiresEnrollmentError } from "@/services/errors/masterRequiresEnrollmentError";
 import { UserAlreadyExistsError } from "@/services/errors/userAlreadyExistsError";
-import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
 import { makeRegisterService } from "@/services/factories/makeRegisterService";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";

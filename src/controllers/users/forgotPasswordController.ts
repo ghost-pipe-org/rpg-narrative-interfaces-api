@@ -1,5 +1,5 @@
-﻿import { makeForgotPasswordService } from "@/services/factories/makeForgotPasswordService";
-import { validationErrorBody } from "@/lib/validationError";
+﻿import { validationErrorBody } from "@/lib/validationError";
+import { makeForgotPasswordService } from "@/services/factories/makeForgotPasswordService";
 import type { Request, Response } from "express";
 import { z } from "zod";
 
@@ -17,11 +17,10 @@ export async function forgotPasswordController(req: Request, res: Response) {
 
 	try {
 		const service = makeForgotPasswordService();
-		const { devLink } = await service.execute(parsed.data);
+		await service.execute(parsed.data);
 		return res.status(200).json({
 			message:
 				"Se existir uma conta com este e-mail, um link de redefinição de senha foi enviado.",
-			...(devLink ? { devLink } : {}),
 		});
 	} catch (error) {
 		console.error(error);

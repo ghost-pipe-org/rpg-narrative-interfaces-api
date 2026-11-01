@@ -27,9 +27,9 @@ export const validateUpdatePassword = (
 	const result = updatePasswordSchema.safeParse(req.body);
 
 	if (!result.success) {
-		return res.status(400).json(
-			validationErrorBody(result.error, "Dados de senha inválidos"),
-		);
+		return res
+			.status(400)
+			.json(validationErrorBody(result.error, "Dados de senha inválidos"));
 	}
 	req.body = result.data;
 	next();

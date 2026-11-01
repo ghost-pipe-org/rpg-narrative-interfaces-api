@@ -16,6 +16,8 @@ const envSchema = z.object({
 	GMAIL_USER: z.string().email().optional(),
 	GMAIL_APP_PASSWORD: z.string().optional(),
 	GMAIL_FROM: z.string().optional(),
+
+	REDIS_URL: z.string().optional(),
 });
 
 const _env = envSchema.safeParse(process.env);

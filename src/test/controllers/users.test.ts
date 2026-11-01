@@ -1,4 +1,6 @@
 import { verifyGoogleIdToken } from "@/lib/googleAuth";
+import type { InMemoryMailService } from "@/mail/inMemoryMailService";
+import { makeMailService } from "@/services/factories/makeMailService";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import app from "../../app";
@@ -14,11 +16,13 @@ vi.mock("@/lib/googleAuth", () => ({
 }));
 
 const mockedVerifyGoogleIdToken = vi.mocked(verifyGoogleIdToken);
+const mailService = makeMailService() as InMemoryMailService;
 
 describe("Users Authentication", () => {
 	beforeEach(async () => {
 		await cleanupTestData();
 		mockedVerifyGoogleIdToken.mockReset();
+		mailService.sent = [];
 	});
 
 	describe("POST /users", () => {
@@ -397,6 +401,10 @@ describe("Users Authentication", () => {
 				where: { userId: user.id, type: "PASSWORD_RESET" },
 			});
 			expect(tokens.length).toBe(1);
+
+			expect(mailService.sent).toHaveLength(1);
+			expect(mailService.sent[0].to).toBe(user.email);
+			expect(mailService.sent[0].text).toContain("/reset-password?token=");
 		});
 
 		it("should reset password with valid token", async () => {

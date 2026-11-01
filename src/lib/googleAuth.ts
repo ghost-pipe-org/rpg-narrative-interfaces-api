@@ -1,6 +1,6 @@
 ﻿import { env } from "@/env/index";
-import { OAuth2Client } from "google-auth-library";
 import { InvalidCredentialsError } from "@/services/errors/invalidCredentialsError";
+import { OAuth2Client } from "google-auth-library";
 
 export interface GoogleIdentity {
 	googleId: string;

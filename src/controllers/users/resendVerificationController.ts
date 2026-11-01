@@ -1,5 +1,5 @@
-﻿import { makeResendVerificationService } from "@/services/factories/makeResendVerificationService";
-import { validationErrorBody } from "@/lib/validationError";
+﻿import { validationErrorBody } from "@/lib/validationError";
+import { makeResendVerificationService } from "@/services/factories/makeResendVerificationService";
 import type { Request, Response } from "express";
 import { z } from "zod";
 
@@ -9,7 +9,10 @@ const schema = z
 	})
 	.strict();
 
-export async function resendVerificationController(req: Request, res: Response) {
+export async function resendVerificationController(
+	req: Request,
+	res: Response,
+) {
 	const parsed = schema.safeParse(req.body);
 	if (!parsed.success) {
 		return res.status(400).json(validationErrorBody(parsed.error));
@@ -17,15 +20,7 @@ export async function resendVerificationController(req: Request, res: Response) 
 
 	try {
 		const service = makeResendVerificationService();
-		const { sent } = await service.execute(parsed.data);
-
-		if (!sent) {
-			return res.status(502).json({
-				message:
-					"Não foi possível enviar o e-mail de verificação. Tente novamente em alguns minutos.",
-				code: "EMAIL_SEND_FAILED",
-			});
-		}
+		await service.execute(parsed.data);
 
 		return res.status(200).json({
 			message:

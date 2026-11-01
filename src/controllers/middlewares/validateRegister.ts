@@ -16,8 +16,7 @@ const baseFields = {
 	phoneNumber: z
 		.string()
 		.regex(/^\d{10,11}$/, {
-			message:
-				"Telefone deve estar no formato: 83999999999 (DDD + número)",
+			message: "Telefone deve estar no formato: 83999999999 (DDD + número)",
 		})
 		.optional(),
 	masterConfirm: z.boolean().optional(),

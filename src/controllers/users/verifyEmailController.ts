@@ -1,6 +1,7 @@
-﻿import { InvalidTokenError } from "@/services/errors/invalidTokenError";
-import { makeVerifyEmailService } from "@/services/factories/makeVerifyEmailService";
 import { validationErrorBody } from "@/lib/validationError";
+import { InvalidTokenError } from "@/services/errors/invalidTokenError";
+import { UserAlreadyExistsError } from "@/services/errors/userAlreadyExistsError";
+import { makeVerifyEmailService } from "@/services/factories/makeVerifyEmailService";
 import type { Request, Response } from "express";
 import { z } from "zod";
 
@@ -23,6 +24,9 @@ export async function verifyEmailController(req: Request, res: Response) {
 	} catch (error) {
 		if (error instanceof InvalidTokenError) {
 			return res.status(400).json({ message: error.message });
+		}
+		if (error instanceof UserAlreadyExistsError) {
+			return res.status(409).json({ message: error.message });
 		}
 		console.error(error);
 		return res.status(500).json({ message: "Erro interno no servidor" });
