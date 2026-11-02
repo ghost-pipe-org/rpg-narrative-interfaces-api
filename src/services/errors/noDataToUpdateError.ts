@@ -1,6 +1,6 @@
 export class NoDataToUpdateError extends Error {
 	constructor() {
-		super("No valid data provided for update");
+		super("Nenhum dado válido fornecido para atualização.");
 		this.name = "NoDataToUpdateError";
 	}
 }

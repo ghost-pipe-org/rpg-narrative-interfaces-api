@@ -1,4 +1,4 @@
-import { makeGetMasterEmittedSessionsService } from "@/services/factories/makeGetMasterEmittedSessionsService";
+﻿import { makeGetMasterEmittedSessionsService } from "@/services/factories/makeGetMasterEmittedSessionsService";
 import type { Request, Response } from "express";
 
 export async function getEmittedSessionsController(
@@ -16,6 +16,6 @@ export async function getEmittedSessionsController(
 		return res.status(200).json({ data: emittedSessions });
 	} catch (error) {
 		console.error("Error fetching emitted sessions:", error);
-		return res.status(500).json({ message: "Internal server error" });
+		return res.status(500).json({ message: "Erro interno no servidor" });
 	}
 }

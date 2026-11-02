@@ -1,3 +1,4 @@
+import { validationErrorBody } from "@/lib/validationError";
 import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
@@ -21,7 +22,7 @@ const updateProfileSchema = z
 			.or(z.literal(""))
 			.optional(),
 
-		email: z.string().email({ message: "Email inválido" }).max(100).optional(),
+		email: z.string().email({ message: "E-mail inválido" }).max(100).optional(),
 		enrollment: z
 			.any()
 			.optional()
@@ -53,10 +54,7 @@ export const validateUpdateProfile = (
 	const result = updateProfileSchema.safeParse(req.body);
 
 	if (!result.success) {
-		return res.status(400).json({
-			message: "Dados inválidos",
-			errors: result.error.errors,
-		});
+		return res.status(400).json(validationErrorBody(result.error));
 	}
 	req.body = result.data;
 	next();

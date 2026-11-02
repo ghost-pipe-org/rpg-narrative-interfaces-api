@@ -209,11 +209,34 @@ const swaggerDefinition = {
 						type: "string",
 						example: "Erro na operação",
 					},
+					code: {
+						type: "string",
+						example: "VALIDATION_ERROR",
+						description:
+							"Código opcional para o cliente tratar o erro (ex.: VALIDATION_ERROR, REGISTRATION_REQUIRED, EMAIL_NOT_VERIFIED)",
+					},
+					errors: {
+						type: "array",
+						description:
+							"Detalhes de validação por campo (quando code = VALIDATION_ERROR)",
+						items: {
+							type: "object",
+							properties: {
+								path: {
+									type: "array",
+									items: { type: "string" },
+								},
+								message: { type: "string" },
+								code: { type: "string" },
+							},
+						},
+					},
 				},
 			},
 			LoginRequest: {
 				type: "object",
-				required: ["email", "password"],
+				description:
+					"Envie email e password para login tradicional, ou googleIdToken (JWT do Google) para login via Google. Se o email do token existir sem googleId, o vínculo é feito automaticamente. Se não existir, retorna 404 com code REGISTRATION_REQUIRED e message Conta Google não vinculada, crie uma conta para poder fazer login.",
 				properties: {
 					email: {
 						type: "string",
@@ -223,6 +246,11 @@ const swaggerDefinition = {
 					password: {
 						type: "string",
 						example: "senha123",
+					},
+					googleIdToken: {
+						type: "string",
+						example: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+						description: "ID token JWT retornado pelo Google Identity Services",
 					},
 				},
 			},

@@ -1,4 +1,4 @@
-import { InvalidUserError } from "@/services/errors/invalidUserError";
+﻿import { InvalidUserError } from "@/services/errors/invalidUserError";
 import { NoDataToUpdateError } from "@/services/errors/noDataToUpdateError";
 import { makeUpdateUserProfileService } from "@/services/factories/makeUpdateUserProfileService";
 import type { Request, Response } from "express";
@@ -17,7 +17,7 @@ export async function updateUserProfileController(req: Request, res: Response) {
 		});
 
 		return res.status(200).json({
-			message: "Profile updated successfully",
+			message: "Perfil atualizado com sucesso",
 			data: user,
 		});
 	} catch (error) {
@@ -35,7 +35,7 @@ export async function updateUserProfileController(req: Request, res: Response) {
 
 		console.error("Error updating user profile:", error);
 		return res.status(500).json({
-			message: "Erro interno do servidor",
+			message: "Erro interno no servidor",
 		});
 	}
 }

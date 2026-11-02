@@ -1,4 +1,4 @@
-import { NotFoundError } from "@/services/errors/notFoundError";
+﻿import { NotFoundError } from "@/services/errors/notFoundError";
 import { SessionAlreadyApprovedError } from "@/services/errors/sessionAlreadyApprovedError";
 import { makeApproveSessionService } from "@/services/factories/makeApproveSessionService";
 import type { Request, Response } from "express";
@@ -18,15 +18,15 @@ export async function approveSessionController(req: Request, res: Response) {
 			location,
 		});
 
-		return res.status(200).json({ message: "Session Approved successfully" });
+		return res.status(200).json({ message: "Sessão aprovada com sucesso" });
 	} catch (error) {
 		if (error instanceof NotFoundError) {
-			console.error("Session not found:", error);
+			console.error("Sessão não encontrada:", error);
 			return res.status(404).json({ message: error.message });
 		}
 		if (error instanceof SessionAlreadyApprovedError) {
 			return res.status(400).json({ message: error.message });
 		}
-		return res.status(500).json({ message: "Internal server error" });
+		return res.status(500).json({ message: "Erro interno no servidor" });
 	}
 }

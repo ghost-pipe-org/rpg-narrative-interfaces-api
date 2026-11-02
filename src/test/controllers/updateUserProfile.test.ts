@@ -1,4 +1,4 @@
-import request from "supertest";
+﻿import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
 import app from "../../app";
 import type { TestUser } from "../helpers";
@@ -67,7 +67,7 @@ describe("PATCH /users/profile - Update User Profile Controller", () => {
 
 			expect(response.body).toHaveProperty(
 				"message",
-				"Profile updated successfully",
+				"Perfil atualizado com sucesso",
 			);
 			expect(response.body).toHaveProperty("data");
 			expect(response.body.data.name).toBe("João Silva Santos");

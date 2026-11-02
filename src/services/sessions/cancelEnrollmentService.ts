@@ -1,4 +1,4 @@
-import type { SessionsRepository } from "@/repositories/sessionsRepository";
+﻿import type { SessionsRepository } from "@/repositories/sessionsRepository";
 import type { UsersRepository } from "@/repositories/usersRepository";
 import { EnrollmentCancellationWindowError } from "../errors/enrollmentCancellationWindowError";
 import { InvalidSessionError } from "../errors/invalidSessionError";
@@ -59,7 +59,7 @@ export class CancelEnrollmentService {
 
 		return {
 			success: true,
-			message: "User successfully unsubscribed from the session.",
+			message: "Inscrição na sessão cancelada com sucesso.",
 		};
 	}
 }

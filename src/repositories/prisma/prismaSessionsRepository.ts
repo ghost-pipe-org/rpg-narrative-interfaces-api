@@ -122,10 +122,16 @@ export class PrismaSessionsRepository implements SessionsRepository {
 	}
 
 	async getAllByStatusAndType(status: string, type: EventType) {
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+
 		return prisma.session.findMany({
 			where: {
 				status: status as SessionStatus,
 				type,
+				approvedDate: {
+					gte: today,
+				},
 			},
 			include: {
 				master: {

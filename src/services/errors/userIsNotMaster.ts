@@ -1,5 +1,6 @@
 export class userIsNotMaster extends Error {
 	constructor() {
-		super("User is not the master of this session.");
+		super("O usuário não é o mestre desta sessão.");
+		this.name = "userIsNotMaster";
 	}
 }

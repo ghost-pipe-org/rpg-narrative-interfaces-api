@@ -22,6 +22,7 @@ async function cleanDatabase() {
 			await prisma.sessionFacilitator.deleteMany();
 			await prisma.sessionPossibleDate.deleteMany();
 			await prisma.session.deleteMany();
+			await prisma.emailToken.deleteMany();
 			await prisma.user.deleteMany();
 
 			console.log("Database cleaned successfully");
@@ -36,7 +37,7 @@ async function cleanDatabase() {
 				console.warn("All cleanup attempts failed, trying to truncate tables");
 
 				try {
-					await prisma.$executeRaw`TRUNCATE TABLE "PostCategory", "Post", "Category", "SessionEnrollment", "SessionFacilitator", "SessionPossibleDate", "Session", "User" CASCADE`;
+					await prisma.$executeRaw`TRUNCATE TABLE "PostCategory", "Post", "Category", "SessionEnrollment", "SessionFacilitator", "SessionPossibleDate", "Session", "EmailToken", "User" CASCADE`;
 					console.log("Database truncated successfully");
 					return;
 				} catch (truncateError) {
@@ -52,6 +53,7 @@ async function cleanDatabase() {
 						await prisma.$executeRaw`DELETE FROM "SessionFacilitator"`;
 						await prisma.$executeRaw`DELETE FROM "SessionPossibleDate"`;
 						await prisma.$executeRaw`DELETE FROM "Session"`;
+						await prisma.$executeRaw`DELETE FROM "EmailToken"`;
 						await prisma.$executeRaw`DELETE FROM "User"`;
 						await prisma.$executeRaw`SET CONSTRAINTS ALL IMMEDIATE`;
 						console.log("Database cleaned with deferred constraints");

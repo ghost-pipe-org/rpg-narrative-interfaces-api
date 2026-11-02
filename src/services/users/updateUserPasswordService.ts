@@ -19,7 +19,7 @@ export class UpdateUserPasswordService {
 	}: UpdateUserPasswordServiceRequest): Promise<void> {
 		const existingUser = await this.usersRepository.findById(userId);
 
-		if (!existingUser) {
+		if (!existingUser || !existingUser.passwordHash) {
 			throw new InvalidUserError();
 		}
 

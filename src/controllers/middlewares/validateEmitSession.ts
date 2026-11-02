@@ -1,26 +1,27 @@
+﻿import { validationErrorBody } from "@/lib/validationError";
 import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
 const emitSessionSquema = z
 	.object({
-		title: z.string().min(1, { message: "Title is required" }),
-		description: z.string().min(1, { message: "Description is required" }),
+		title: z.string().min(1, { message: "Título é obrigatório" }),
+		description: z.string().min(1, { message: "Descrição é obrigatória" }),
 		requirements: z.string().optional(),
-		system: z.string().min(1, { message: "System is required" }),
+		system: z.string().min(1, { message: "Sistema é obrigatório" }),
 		possibleDates: z
 			.array(z.string().datetime())
-			.min(1, { message: "At least one date is required" }),
+			.min(1, { message: "Informe ao menos uma data" }),
 		period: z.enum(["MANHA", "TARDE", "NOITE"], {
-			message: "Period must be MANHA, TARDE, or NOITE",
+			message: "Período deve ser MANHA, TARDE ou NOITE",
 		}),
 		minPlayers: z
 			.number()
 			.int()
-			.min(1, { message: "Minimum players must be at least 1" }),
+			.min(1, { message: "Mínimo de jogadores deve ser pelo menos 1" }),
 		maxPlayers: z
 			.number()
 			.int()
-			.min(1, { message: "Maximum players must be at least 1" }),
+			.min(1, { message: "Máximo de jogadores deve ser pelo menos 1" }),
 	})
 	.strict();
 
@@ -31,8 +32,7 @@ export const validateEmitSession = (
 ) => {
 	const result = emitSessionSquema.safeParse(req.body);
 	if (!result.success) {
-		console.error("Validation errors:", result.error.errors);
-		return res.status(400).json({ errors: result.error.errors });
+		return res.status(400).json(validationErrorBody(result.error));
 	}
 	next();
 };

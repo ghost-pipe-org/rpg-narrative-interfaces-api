@@ -1,6 +1,6 @@
 export class InvalidSessionError extends Error {
 	constructor() {
-		super("Invalid session.");
+		super("Sessão inválida.");
 		this.name = "InvalidSessionError";
 	}
 }

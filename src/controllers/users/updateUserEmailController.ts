@@ -11,14 +11,17 @@ export async function updateUserEmailController(req: Request, res: Response) {
 		const userId = (req.user as { id: string }).id;
 		const { currentPassword, newEmail } = req.body;
 
-		const { user } = await updateUserEmailService.execute({
+		const { user, pendingConfirmation } = await updateUserEmailService.execute({
 			userId,
 			currentPasswordRaw: currentPassword,
 			newEmail,
 		});
 
 		return res.status(200).json({
-			message: "Email atualizado com sucesso",
+			message: pendingConfirmation
+				? "Enviamos um link de confirmação para o novo e-mail. O endereço atual será mantido até a confirmação."
+				: "O e-mail informado já é o endereço atual da conta.",
+			pendingConfirmation,
 			data: user,
 		});
 	} catch (error) {
@@ -36,13 +39,13 @@ export async function updateUserEmailController(req: Request, res: Response) {
 
 		if (error instanceof UserAlreadyExistsError) {
 			return res.status(409).json({
-				message: "O endereço de email fornecido já está em uso",
+				message: "O endereço de e-mail fornecido já está em uso",
 			});
 		}
 
 		console.error("Error updating user email:", error);
 		return res.status(500).json({
-			message: "Erro interno do servidor ao atualizar o email",
+			message: "Erro interno no servidor ao atualizar o e-mail",
 		});
 	}
 }

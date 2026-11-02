@@ -1,6 +1,6 @@
 export class NotEnrolledError extends Error {
 	constructor() {
-		super("User is not enrolled in this session.");
+		super("Usuário não está inscrito nesta sessão.");
 		this.name = "NotEnrolledError";
 	}
 }

@@ -1,0 +1,46 @@
+services:
+  postgres-staging:
+    container_name: rpg-system-postgres-staging
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_staging_data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+
+  redis-staging:
+    image: redis:7-alpine
+    restart: always
+    expose:
+      - "6379"
+
+  app-staging:
+    build: .
+    container_name: rpg-system-api-staging
+    restart: always
+    ports:
+      - "3002:3001"
+    environment:
+      NODE_ENV: staging
+      PORT: 3001
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-staging:5432/${POSTGRES_DB}
+      JWT_SECRET: ${JWT_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      FRONTEND_URL: ${FRONTEND_URL}
+      REDIS_URL: redis://redis-staging:6379
+      GMAIL_USER: ${GMAIL_USER}
+      GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD}
+      GMAIL_FROM: ${GMAIL_FROM}
+      ADMIN_NAME: ${ADMIN_NAME}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    depends_on:
+      - postgres-staging
+      - redis-staging
+
+volumes:
+  postgres_staging_data:

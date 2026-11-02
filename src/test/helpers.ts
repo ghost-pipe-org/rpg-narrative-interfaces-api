@@ -1,3 +1,4 @@
+import { generateRawToken, hashToken } from "@/lib/token";
 import { PrismaClient } from "@prisma/client";
 import type {
 	EnrollmentStatus,
@@ -28,6 +29,8 @@ export interface TestUser {
 	role: UserRole;
 	enrollment?: string;
 	phoneNumber?: string;
+	googleId?: string;
+	emailVerified?: boolean;
 }
 
 export interface TestSession {
@@ -64,6 +67,8 @@ export async function createUser(
 		role: data.role || ("PLAYER" as UserRole),
 		enrollment: data.enrollment,
 		phoneNumber: data.phoneNumber,
+		googleId: data.googleId,
+		emailVerified: data.emailVerified ?? true,
 	};
 
 	try {
@@ -75,6 +80,8 @@ export async function createUser(
 				role: userData.role,
 				enrollment: userData.enrollment,
 				phoneNumber: userData.phoneNumber,
+				googleId: userData.googleId,
+				emailVerified: userData.emailVerified,
 			},
 		});
 
@@ -103,6 +110,8 @@ export async function createUser(
 					role: userData.role,
 					enrollment: userData.enrollment,
 					phoneNumber: userData.phoneNumber,
+					googleId: userData.googleId,
+					emailVerified: userData.emailVerified,
 				},
 			});
 
@@ -119,6 +128,9 @@ export async function createUser(
 export async function createSession(
 	data: Partial<TestSession> & { masterId: string },
 ): Promise<TestSession> {
+	const futureDate = new Date();
+	futureDate.setDate(futureDate.getDate() + 3);
+
 	const sessionData = {
 		title: data.title || "Test Session",
 		description: data.description || "Test session description",
@@ -134,7 +146,9 @@ export async function createSession(
 		status: data.status || ("PENDENTE" as SessionStatus),
 		period: data.period,
 		requirements: data.requirements,
-		approvedDate: data.approvedDate,
+		approvedDate:
+			data.approvedDate ||
+			(data.status === "APROVADA" ? futureDate : undefined),
 	};
 
 	const session = await prisma.session.create({
@@ -160,6 +174,9 @@ export async function createSession(
 export async function createWorkshop(
 	data: Partial<Omit<TestSession, "masterId">> & { facilitatorIds: string[] },
 ): Promise<TestSession & { facilitatorIds: string[] }> {
+	const futureDate = new Date();
+	futureDate.setDate(futureDate.getDate() + 3);
+
 	const sessionData = {
 		type: "OFICINA" as const,
 		title: data.title || "Test Workshop",
@@ -170,7 +187,9 @@ export async function createWorkshop(
 		status: data.status || ("PENDENTE" as SessionStatus),
 		period: data.period,
 		requirements: data.requirements,
-		approvedDate: data.approvedDate,
+		approvedDate:
+			data.approvedDate ||
+			(data.status === "APROVADA" ? futureDate : undefined),
 	};
 
 	const session = await prisma.session.create({
@@ -301,6 +320,22 @@ export async function enrollUserInSession(
 	});
 }
 
+export async function createEmailToken(
+	userId: string,
+	type: "EMAIL_VERIFICATION" | "PASSWORD_RESET" = "EMAIL_VERIFICATION",
+) {
+	const rawToken = generateRawToken();
+	await prisma.emailToken.create({
+		data: {
+			userId,
+			tokenHash: hashToken(rawToken),
+			type,
+			expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+		},
+	});
+	return rawToken;
+}
+
 export async function cleanupTestData() {
 	const maxRetries = 3;
 	let retryCount = 0;
@@ -314,6 +349,7 @@ export async function cleanupTestData() {
 			await prisma.sessionFacilitator.deleteMany();
 			await prisma.sessionPossibleDate.deleteMany();
 			await prisma.session.deleteMany();
+			await prisma.emailToken.deleteMany();
 			await prisma.user.deleteMany();
 			return;
 		} catch (error) {
@@ -327,7 +363,7 @@ export async function cleanupTestData() {
 
 			if (retryCount >= maxRetries) {
 				try {
-					await prisma.$executeRaw`TRUNCATE TABLE "PostCategory", "Post", "Category", "SessionEnrollment", "SessionFacilitator", "SessionPossibleDate", "Session", "User" CASCADE`;
+					await prisma.$executeRaw`TRUNCATE TABLE "PostCategory", "Post", "Category", "SessionEnrollment", "SessionFacilitator", "SessionPossibleDate", "Session", "EmailToken", "User" CASCADE`;
 					return;
 				} catch (truncateError) {
 					try {
@@ -339,6 +375,7 @@ export async function cleanupTestData() {
 						await prisma.$executeRaw`DELETE FROM "SessionFacilitator"`;
 						await prisma.$executeRaw`DELETE FROM "SessionPossibleDate"`;
 						await prisma.$executeRaw`DELETE FROM "Session"`;
+						await prisma.$executeRaw`DELETE FROM "EmailToken"`;
 						await prisma.$executeRaw`DELETE FROM "User"`;
 						await prisma.$executeRaw`SET CONSTRAINTS ALL IMMEDIATE`;
 						return;

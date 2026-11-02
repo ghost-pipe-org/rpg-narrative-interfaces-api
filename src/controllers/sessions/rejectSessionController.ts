@@ -1,4 +1,4 @@
-import { NotFoundError } from "@/services/errors/notFoundError";
+﻿import { NotFoundError } from "@/services/errors/notFoundError";
 import { SessionAlreadyRejectedError } from "@/services/errors/sessionAlreadyRejectedError";
 import { makeRejectSessionService } from "@/services/factories/makeRejectSessionService";
 import type { Request, Response } from "express";
@@ -14,7 +14,7 @@ export async function rejectSessionController(req: Request, res: Response) {
 			userId,
 		});
 
-		return res.status(200).json({ message: "Session rejected successfully" });
+		return res.status(200).json({ message: "Sessão rejeitada com sucesso" });
 	} catch (error) {
 		if (error instanceof NotFoundError) {
 			return res.status(404).json({ message: error.message });
@@ -22,6 +22,6 @@ export async function rejectSessionController(req: Request, res: Response) {
 		if (error instanceof SessionAlreadyRejectedError) {
 			return res.status(400).json({ message: error.message });
 		}
-		return res.status(500).json({ message: "Internal server error" });
+		return res.status(500).json({ message: "Erro interno no servidor" });
 	}
 }

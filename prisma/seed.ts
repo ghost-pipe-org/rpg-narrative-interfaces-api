@@ -42,6 +42,7 @@ async function main() {
 				name: adminName,
 				email: adminEmail,
 				passwordHash: passwordHash,
+				emailVerified: true,
 				role: "ADMIN",
 				enrollment: "000000001", // Matrícula especial para admin
 			},

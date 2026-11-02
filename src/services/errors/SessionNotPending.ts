@@ -1,5 +1,6 @@
 export class SessionNotPending extends Error {
 	constructor() {
-		super("Session does not have PENDING status");
+		super("A sessão não está com status PENDENTE.");
+		this.name = "SessionNotPending";
 	}
 }
